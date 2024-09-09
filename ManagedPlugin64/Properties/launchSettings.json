@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ManagedPlugin64": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

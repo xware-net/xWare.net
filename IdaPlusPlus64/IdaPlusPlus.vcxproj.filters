@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="IdaPlusPlus.cpp" />
+    <ClCompile Include="SegSelect\SegmentDialog.cpp" />
+    <ClCompile Include="SegSelect\SegSelectEx.cpp" />
+    <ClCompile Include="SegSelect\SegSelectRes.cpp" />
+    <ClCompile Include="WaitBox\MyQProgressDialog.cpp" />
+    <ClCompile Include="WaitBox\WaitBoxEx.cpp" />
+    <ClCompile Include="WaitBox\WinTaskProgress.cpp" />
+    <ClCompile Include="MainDialog\ClassInformerRes.cpp" />
+    <ClCompile Include="MainDialog\MainDialogEx.cpp" />
+    <ClCompile Include="MainDialog\MainDialog.cpp" />
+    <ClCompile Include="OggPlayer\IdaOgg.cpp" />
+    <ClCompile Include="OggPlayer\stb_vorbis.cpp" />
+    <ClCompile Include="RTTIChooser\rtti_chooser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Auto.h" />
+    <ClInclude Include="Bytes.h" />
+    <ClInclude Include="Demangle.h" />
+    <ClInclude Include="EntryPoint.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="Funcs.h" />
+    <ClInclude Include="Hexrays.h" />
+    <ClInclude Include="IdaPlusPlus.h" />
+    <ClInclude Include="idasdk.h" />
+    <ClInclude Include="Inf.h" />
+    <ClInclude Include="Kernwin.h" />
+    <ClInclude Include="Lines.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="Nalt.h" />
+    <ClInclude Include="Name.h" />
+    <ClInclude Include="Netnode.h" />
+    <ClInclude Include="Pro.h" />
+    <ClInclude Include="Segment.h" />
+    <ClInclude Include="Ua.h" />
+    <ClInclude Include="Xref.h" />
+    <ClInclude Include="Segregs.h" />
+    <ClInclude Include="WaitBox.h" />
+    <ClInclude Include="SegSelect.h" />
+    <ClInclude Include="SegSelect\SegmentDialog.h" />
+    <ClInclude Include="SegSelect\SegSelectEx.h" />
+    <ClInclude Include="SegSelect\ui_SegmentDialog.h" />
+    <ClInclude Include="WaitBox\MyQProgressDialog.h" />
+    <ClInclude Include="WaitBox\WaitBoxEx.h" />
+    <ClInclude Include="WaitBox\WinTaskProgress.h" />
+    <ClInclude Include="MainDialog\ui_dialog.h" />
+    <ClInclude Include="MainDialog.h" />
+    <ClInclude Include="OggPlayer\IdaOgg.h" />
+    <ClInclude Include="OggPlayer\stb_vorbis.h" />
+    <ClInclude Include="OggPlayer.h" />
+    <ClInclude Include="RTTIChooser\rtti_chooser.h" />
+    <ClInclude Include="RTTIChooser.h" />
+  </ItemGroup>
+</Project>

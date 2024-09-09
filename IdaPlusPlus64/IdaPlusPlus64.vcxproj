@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{6C367767-562C-412D-9970-F78056D973D1}</ProjectGuid>
+    <TargetFrameworkVersion>
+    </TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>Ida</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>IdaPlusPlus64</ProjectName>
+    <TargetFramework>net8.0</TargetFramework>
+    <WindowsTargetPlatformMinVersion>7.0</WindowsTargetPlatformMinVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>NetCore</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>NetCore</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEMO;_CRT_SECURE_NO_WARNINGS;__MAKEDLL__;__NT__;__IDP__;__EA64__;__X64__;WIN32;_DEBUG;_CONSOLE;BRIDGETONATIVE_EXPORTS;_WINDOWS;_USRDLL;UNICODE;_UNICODE;__VC__;QT_NAMESPACE=QT;QT_NO_UNICODE_LITERAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IDADIR83)\plugins\hexrays_sdk\include;$(IDASDK83)\include;$(QTDIR)\include</AdditionalIncludeDirectories>
+      <ConformanceMode>Default</ConformanceMode>
+      <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <DisableSpecificWarnings>4484;4267;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ida.lib;winmm.lib;QT5Core.lib;Qt5Gui.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(IDASDK83)\lib\x64_win_vc_64_pro;$(IDASDK83)\lib\x64_win_qt</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <AdditionalOptions>/IGNORE:4248 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;__MAKEDLL__;__NT__;__IDP__;__EA64__;__X64__;WIN32;NDEBUG;_CONSOLE;BRIDGETONATIVE_EXPORTS;_WINDOWS;_USRDLL;UNICODE;_UNICODE;__VC__;QT_NO_DEBUG;QT_NAMESPACE=QT;QT_NO_UNICODE_LITERAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IDADIR83)\plugins\hexrays_sdk\include;$(IDASDK83)\include;$(QTDIR)\include</AdditionalIncludeDirectories>
+      <ShowIncludes>false</ShowIncludes>
+      <DisableSpecificWarnings>4484;4267;</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ida.lib;QT5Core.lib;Qt5Gui.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(IDASDK83)\lib\x64_win_vc_64_pro;$(IDASDK83)\lib\x64_win_qt</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Auto.h" />
+    <ClInclude Include="Bitrange.h" />
+    <ClInclude Include="Bytes.h" />
+    <ClInclude Include="Compress.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Cvt64.h" />
+    <ClInclude Include="Dbg.h" />
+    <ClInclude Include="Diskio.h" />
+    <ClInclude Include="Err.h" />
+    <ClInclude Include="Exehdr.h" />
+    <ClInclude Include="Fixup.h" />
+    <ClInclude Include="Fpro.h" />
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Gdl.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Help.h" />
+    <ClInclude Include="Idacfg.h" />
+    <ClInclude Include="Idd.h" />
+    <ClInclude Include="Idp.h" />
+    <ClInclude Include="Jumptable.h" />
+    <ClInclude Include="Lex.h" />
+    <ClInclude Include="MainDialog.h" />
+    <ClInclude Include="MainDialog\MainDialogEx.h" />
+    <ClInclude Include="MainDialog\ui_dialog.h" />
+    <ClInclude Include="Demangle.h" />
+    <ClInclude Include="Entry.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="Funcs.h" />
+    <ClInclude Include="Hexrays.h" />
+    <ClInclude Include="IdaPlusPlus.h" />
+    <ClInclude Include="idasdk.h" />
+    <ClInclude Include="Inf.h" />
+    <ClInclude Include="Kernwin.h" />
+    <ClInclude Include="Lines.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="Md5.h" />
+    <ClInclude Include="Moves.h" />
+    <ClInclude Include="Nalt.h" />
+    <ClInclude Include="Name.h" />
+    <ClInclude Include="Netnode.h" />
+    <ClInclude Include="Network.h" />
+    <ClInclude Include="Offset.h" />
+    <ClInclude Include="OggPlayer.h" />
+    <ClInclude Include="OggPlayer\IdaOgg.h" />
+    <ClInclude Include="OggPlayer\stb_vorbis.h" />
+    <ClInclude Include="Parsejson.h" />
+    <ClInclude Include="Pro.h" />
+    <ClInclude Include="Problems.h" />
+    <ClInclude Include="Prodir.h" />
+    <ClInclude Include="Pronet.h" />
+    <ClInclude Include="Range.h" />
+    <ClInclude Include="Regex.h" />
+    <ClInclude Include="Registry.h" />
+    <ClInclude Include="RTTIChooser.h" />
+    <ClInclude Include="RTTIChooser\rtti_chooser.h" />
+    <ClInclude Include="Search.h" />
+    <ClInclude Include="Segment.h" />
+    <ClInclude Include="SegSelect.h" />
+    <ClInclude Include="Segregs.h" />
+    <ClInclude Include="SegSelect\SegmentDialog.h" />
+    <ClInclude Include="SegSelect\SegSelectEx.h" />
+    <ClInclude Include="SegSelect\ui_SegmentDialog.h" />
+    <ClInclude Include="Srclang.h" />
+    <ClInclude Include="Strlist.h" />
+    <ClInclude Include="Struct.h" />
+    <ClInclude Include="Tryblks.h" />
+    <ClInclude Include="Typeinf.h" />
+    <ClInclude Include="Ua.h" />
+    <ClInclude Include="WaitBox.h" />
+    <ClInclude Include="WaitBox\MyQProgressDialog.h" />
+    <ClInclude Include="WaitBox\WaitBoxEx.h" />
+    <ClInclude Include="WaitBox\WinTaskProgress.h" />
+    <ClInclude Include="Xref.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="MainDialog\ClassInformerRes.cpp" />
+    <ClCompile Include="MainDialog\MainDialogEx.cpp" />
+    <ClCompile Include="IdaPlusPlus.cpp" />
+    <ClCompile Include="MainDialog\MainDialog.cpp" />
+    <ClCompile Include="OggPlayer\IdaOgg.cpp" />
+    <ClCompile Include="OggPlayer\stb_vorbis.cpp" />
+    <ClCompile Include="RTTIChooser\rtti_chooser.cpp" />
+    <ClCompile Include="SegSelect\SegmentDialog.cpp" />
+    <ClCompile Include="SegSelect\SegSelectEx.cpp" />
+    <ClCompile Include="SegSelect\SegSelectRes.cpp" />
+    <ClCompile Include="WaitBox\MyQProgressDialog.cpp" />
+    <ClCompile Include="WaitBox\WaitBoxEx.cpp" />
+    <ClCompile Include="WaitBox\WinTaskProgress.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="runtimeconfig.template.json" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
