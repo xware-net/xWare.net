@@ -26,7 +26,7 @@ namespace ManagedPlugin.Source
         public static bool Run()
         {
             List<IntPtr> sdirsPtr = new List<IntPtr>();
-            int num = ida_get_ida_subdirs(sdirsPtr, Marshal.StringToHGlobalAnsi(@"c:\IDAfreeware84"), 0x00000002);
+            int num = ida_get_ida_subdirs(sdirsPtr, Marshal.StringToHGlobalAnsi("plugins"), 0x00000000);
             var dirs = MarshalingUtils.ListOfIntPtrToStringArray(sdirsPtr, num);
             return false;
         }
