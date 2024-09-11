@@ -458,4 +458,8 @@ static void ida_save_signatures()
 //	return invalidate_sp_analysis(get_func(ea));
 //}
 
-
+static int ida_get_tail_refqty(IntPtr pfn)
+{
+	auto f = (func_t*)(pfn.ToPointer());
+	return f->refqty;
+}

@@ -393,16 +393,19 @@ namespace IdaNet.IdaInterop
 
         private bool IsFuncTail(IntPtr _fnt)
         {
-            // Check if _fnt is a tail.
-            // Replace this mock function with actual code.
-            return true;
+            return ida_is_func_tail(_fnt);
         }
 
         private int GetRefQty(IntPtr _fnt)
         {
-            // Return the reference quantity of the function.
-            // Replace this mock function with actual code.
-            return 10; // Placeholder value
+            if (ida_is_func_tail(_fnt))
+            {
+                return ida_get_tail_refqty(_fnt);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private ulong GetRefererAtIndex(IntPtr _fnt, int index)
