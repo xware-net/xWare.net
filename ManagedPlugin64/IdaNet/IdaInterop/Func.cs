@@ -21,14 +21,29 @@ namespace IdaNet.IdaInterop
 {
     public class RegArgT
     {
-        public byte Reg { get; set; } = 0;
-        public byte Type { get; set; } = 0;
-        public string Name { get; set; } = null;
+        public IntPtr UnmanagedPtr;
+        public int Reg
+        {
+            get => MarshalingUtils.GetInt32(UnmanagedPtr, 0x00);
+            set => MarshalingUtils.SetInt32(UnmanagedPtr, 0x00, value);
+        }
+        public IntPtr TypePtr
+        {
+            get => MarshalingUtils.GetIntPtr(UnmanagedPtr, 0x08);
+            set => MarshalingUtils.SetIntPtr(UnmanagedPtr, 0x08, value);
+        }
+        public byte Type { get; set; }
+        public string Name { get; set; }
 
-        // Default constructor
-        public RegArgT() { }
+        public RegArgT(IntPtr ptr)
+        {
+            UnmanagedPtr = ptr;
+            Reg = MarshalingUtils.GetInt32(UnmanagedPtr, 0x00);
+            TypePtr = MarshalingUtils.GetIntPtr(UnmanagedPtr, 0x08);
+            Type = MarshalingUtils.GetByte(TypePtr, 0x00);
+            Name = MarshalingUtils.GetString(UnmanagedPtr, 0x10);
+        }
 
-        // Copy constructor
         public RegArgT(RegArgT other)
         {
             Reg = other.Reg;
@@ -36,13 +51,11 @@ namespace IdaNet.IdaInterop
             Name = new StringBuilder().Append(other.Name).ToString();
         }
 
-        // Destructor
         ~RegArgT()
         {
             FreeRegArgT();
         }
 
-        // Assignment operator equivalent
         public RegArgT Assign(RegArgT other)
         {
             if (this != other)
@@ -55,7 +68,6 @@ namespace IdaNet.IdaInterop
             return this;
         }
 
-        // Swap method
         public void Swap(RegArgT other)
         {
             (Reg, other.Reg) = (other.Reg, Reg);
@@ -63,13 +75,11 @@ namespace IdaNet.IdaInterop
             (Name, other.Name) = (other.Name, Name);
         }
 
-        // Free resources
         private void FreeRegArgT()
         {
             Name = null;
         }
 
-        // Comparisons
         public int CompareTo(RegArgT other)
         {
             // Implement comparison logic as needed
@@ -163,34 +173,34 @@ namespace IdaNet.IdaInterop
             //
             UvalT frame;        ///< netnode id of frame structure - see frame.hpp
             AsizeT frsize;      ///< size of local variables part of frame in bytes.
-                                 ///< If #FUNC_FRAME is set and #fpd==0, the frame pointer
-                                 ///< (EBP) is assumed to point to the top of the local
-                                 ///< variables range.
+                                ///< If #FUNC_FRAME is set and #fpd==0, the frame pointer
+                                ///< (EBP) is assumed to point to the top of the local
+                                ///< variables range.
             ushort frregs;       ///< size of saved registers in frame. This range is
                                  ///< immediately above the local variables range.
             AsizeT argsize;     ///< number of bytes purged from the stack
-                                 ///< upon returning
+                                ///< upon returning
             AsizeT fpd;         ///< frame pointer delta. (usually 0, i.e. realBP==typicalBP)
-                                 ///< use update_fpd() to modify it.
+                                ///< use update_fpd() to modify it.
 
             BgcolorT color;     ///< user defined function color
 
-                                 // the following fields should not be accessed directly:
+            // the following fields should not be accessed directly:
 
             UInt32 pntqty;       ///< number of SP change points
             //stkpnt_t* points;  ///< array of SP change points.
-                                 ///< use ...stkpnt...() functions to access this array.
+            ///< use ...stkpnt...() functions to access this array.
 
             int regvarqty;       ///< number of register variables (-1-not read in yet)
                                  ///< use find_regvar() to read register variables
             //regvar_t* regvars; ///< array of register variables.
-                                 ///< this array is sorted by: start_ea.
-                                 ///< use ...regvar...() functions to access this array.
+            ///< this array is sorted by: start_ea.
+            ///< use ...regvar...() functions to access this array.
 
             int llabelqty;       ///< number of local labels
             //llabel_t* llabels; ///< local labels.
-                                 ///< this array shouldn't be accessed directly; name.hpp
-                                 ///< functions should be used instead.
+            ///< this array shouldn't be accessed directly; name.hpp
+            ///< functions should be used instead.
 
             int regargqty;       ///< number of register arguments.
                                  ///< During analysis IDA tries to guess the register
@@ -198,19 +208,19 @@ namespace IdaNet.IdaInterop
                                  ///< in this field. As soon as it determines the final
                                  ///< function prototype, regargqty is set to zero.
             //regarg_t* regargs; ///< unsorted array of register arguments.
-                                 ///< use ...regarg...() functions to access this array.
-                                 ///< regargs are destroyed when the full function
-                                 ///< type is determined.
+            ///< use ...regarg...() functions to access this array.
+            ///< regargs are destroyed when the full function
+            ///< type is determined.
 
             int tailqty;         ///< number of function tails
             //range_t* tails;    ///< array of tails, sorted by ea.
-                                 ///< use func_tail_iterator_t to access function tails.
+            ///< use func_tail_iterator_t to access function tails.
         };
 
         public struct Tail
         {
-            EaT owner;          ///< the address of the main function possessing this tail
-            int refqty;          ///< number of referers
+            public EaT owner;          ///< the address of the main function possessing this tail
+            public int refqty;          ///< number of referers
             //ea_t* referers;    ///< array of referers (function start addresses).
         };
 
@@ -246,6 +256,23 @@ namespace IdaNet.IdaInterop
             start_ea = ida_get_func_start_ea(funcPtr);
             end_ea = ida_get_func_end_ea(funcPtr);
             flags = ida_get_func_flags(funcPtr);
+            frame = MarshalingUtils.GetUInt64(funcPtr, 0x18);
+            //owner = MarshalingUtils.GetEffectiveAddress(funcPtr, 0x20);
+            //frsize = ;
+            //frregs = ;
+            //argsize = ;
+            //fpd = ;
+            //color = ;
+            //pntqty = ;
+            // points = ;
+            //regvarqty = ;
+            // regvars = ;
+            //llabelqty = ;
+            // llabels = ;
+            //regargqty = ;
+            // regargs = ;
+            //tailqty = ;
+            // tails = ;
         }
 
         public IntPtr UnmanagedPtr { get; set; }
@@ -387,8 +414,7 @@ namespace IdaNet.IdaInterop
 
         private void LockFuncRange(IntPtr _fnt, bool lockState)
         {
-            // Implementation for locking/unlocking the function range.
-            // Replace this mock function with actual code.
+            ida_lock_func_range(_fnt, lockState);
         }
 
         private bool IsFuncTail(IntPtr _fnt)

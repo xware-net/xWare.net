@@ -170,6 +170,11 @@ namespace IdaNet.IdaInterop
             return (UInt32)Marshal.ReadInt32(nativePointer, ea64Offset);
         }
 
+        internal static UInt64 GetUInt64(IntPtr nativePointer, ushort ea64Offset)
+        {
+            return (UInt64)Marshal.ReadInt64(nativePointer, ea64Offset);
+        }
+
         internal static void WriteByte(IntPtr nativePointer, ushort ea64Offset, byte value)
         {
             Marshal.WriteByte(nativePointer, ea64Offset, value);

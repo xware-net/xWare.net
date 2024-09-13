@@ -1,9 +1,12 @@
 #pragma once
 
-//static void ida_free_regarg(regarg_t* v)
-//{
-//	return free_regarg(v);
-//}
+[::System::Runtime::InteropServices::UnmanagedFunctionPointer(::System::Runtime::InteropServices::CallingConvention::Cdecl)]
+delegate void Action_UInt64_UInt64___IntPtr(unsigned long long ea1, unsigned long long ea2, ::System::IntPtr ud);
+
+static void ida_free_regarg(IntPtr v)
+{
+	return free_regarg((regarg_t*)(v.ToPointer()));
+}
 
 static bool ida_is_func_entry(IntPtr pfn)
 {
@@ -71,20 +74,26 @@ static IntPtr ida_get_next_func(ea_t ea)
 	return IntPtr(get_next_func(ea));
 }
 
-//static ea_t ida_get_func_ranges(rangeset_t* ranges, func_t* pfn)
-//{
-//	return get_func_ranges(ranges, pfn);
-//}
-//
-//static ssize_t ida_get_func_cmt(qstring* buf, func_t* pfn, bool repeatable)
-//{
-//	return get_func_cmt(buf, pfn, repeatable);
-//}
-//
-//static bool ida_set_func_cmt(func_t* pfn, char* cmt, bool repeatable)
-//{
-//	return set_func_cmt(pfn, cmt, repeatable);
-//}
+static ea_t ida_get_func_ranges(IntPtr ranges, IntPtr pfn)
+{
+	return get_func_ranges((rangeset_t*)(ranges.ToPointer()), (func_t*)(pfn.ToPointer()));
+}
+
+static ssize_t ida_get_func_cmt(IntPtr buf, IntPtr pfn, bool repeatable)
+{
+	qstring out;
+   	ssize_t len = get_func_cmt(&out, (const func_t*)(pfn.ToPointer()), repeatable);
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, len);
+	}
+	return len;
+}
+
+static bool ida_set_func_cmt(IntPtr pfn, IntPtr cmt, bool repeatable)
+{
+	return set_func_cmt((const func_t*)(pfn.ToPointer()), (const char*)(cmt.ToPointer()), repeatable);
+}
 
 static bool ida_update_func(IntPtr pfn)
 {
@@ -127,40 +136,20 @@ static int ida_find_func_bounds(IntPtr nfn, int flags)
 	return find_func_bounds((func_t*)(nfn.ToPointer()), flags);
 }
 
-//static ssize_t ida_get_func_name(qstring* out, ea_t ea)
-//{
-//	return get_func_name(out, ea);
-//}
-//
+static ssize_t ida_get_func_name(IntPtr out, ea_t ea)
+{
+	qstring buf;
+	ssize_t len = get_func_name(&buf, ea);
+	if (out != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(buf, out, len);
+	}
+	return len;
+}
 
 static asize_t ida_calc_func_size(IntPtr pfn)
 {
 	return calc_func_size((func_t*)(pfn.ToPointer()));
-}
-
-// marshaling
-static ea_t ida_get_func_start_ea(IntPtr func)
-{
-	func_t* f = (func_t*)(func.ToPointer());
-	return f->start_ea;
-}
-
-static ea_t ida_get_func_end_ea(IntPtr func)
-{
-	func_t* f = (func_t*)(func.ToPointer());
-	return f->end_ea;
-}
-
-static UInt64 ida_get_func_flags(IntPtr func)
-{
-	func_t* f = (func_t*)(func.ToPointer());
-	return f->flags;
-}
-
-static asize_t ida_get_func_size(IntPtr func)
-{
-	func_t* f = (func_t*)(func.ToPointer());
-	return calc_func_size(f);
 }
 
 static int ida_get_func_bitness(IntPtr pfn)
@@ -198,10 +187,10 @@ static int ida_set_func_name_if_jumpfunc(IntPtr pfn, char* oldname)
 	return set_func_name_if_jumpfunc((func_t*)(pfn.ToPointer()), oldname);
 }
 
-//static ea_t ida_calc_thunk_func_target(func_t* pfn, ea_t* fptr)
-//{
-//	return calc_thunk_func_target(pfn, fptr);
-//}
+static ea_t ida_calc_thunk_func_target(IntPtr pfn, IntPtr fptr)
+{
+	return calc_thunk_func_target((func_t*)(pfn.ToPointer()), (ea_t*)(fptr.ToPointer()));
+}
 
 static bool ida_func_does_return(ea_t callee)
 {
@@ -218,9 +207,6 @@ static bool ida_set_noret_insn(ea_t insn_ea, bool noret)
 	return set_noret_insn(insn_ea, noret);
 }
 
-//--------------------------------------------------------------------
-//      F U N C T I O N   C H U N K S
-//--------------------------------------------------------------------
 static IntPtr ida_get_fchunk(ea_t ea)
 {
 	auto fchunk = get_fchunk(ea);
@@ -270,80 +256,55 @@ static bool ida_set_tail_owner(IntPtr fnt, ea_t func_start)
 	return set_tail_owner((func_t*)(fnt.ToPointer()), func_start);
 }
 
-// static bool ida_func_tail_iterator_set(func_tail_iterator_t* fti, func_t* pfn, ea_t ea)
-//{
-//	return func_tail_iterator_set(fti, pfn, ea);
-//}
+static bool ida_func_tail_iterator_set(IntPtr fti, IntPtr pfn, ea_t ea)
+{
+	return func_tail_iterator_set((func_tail_iterator_t*)(fti.ToPointer()), (func_t*)(pfn.ToPointer()), ea);
+}
 
-// static bool ida_func_tail_iterator_set_ea(func_tail_iterator_t* fti, ea_t ea)
-//{
-//	return func_tail_iterator_set_ea(fti, ea);
-//}
+static bool ida_func_tail_iterator_set_ea(IntPtr fti, ea_t ea)
+{
+	return func_tail_iterator_set_ea((func_tail_iterator_t*)(fti.ToPointer()), ea);
+}
 
-// static bool ida_func_parent_iterator_set(func_parent_iterator_t* fpi, func_t* pfn)
-//{
-//	return func_parent_iterator_set(fpi, pfn);
-//}
+static bool ida_func_parent_iterator_set(IntPtr fpi, IntPtr pfn)
+{
+	return func_parent_iterator_set((func_parent_iterator_t*)(fpi.ToPointer()), (func_t*)(pfn.ToPointer()));
+}
 
-// static bool ida_func_item_iterator_next(func_item_iterator_t* fii, testf_t* testf, void* ud)
-//{
-//	return func_item_iterator_next(fii, testf, ud);
-//}
+static bool ida_func_item_iterator_next(IntPtr fii, IntPtr testf, IntPtr ud)
+{
+	return func_item_iterator_next((func_item_iterator_t*)(fii.ToPointer()), (testf_t*)(testf.ToPointer()), (void*)(ud.ToPointer()));
+}
 
-// static bool ida_func_item_iterator_prev(func_item_iterator_t* fii, testf_t* testf, void* ud)
-//{
-//	return func_item_iterator_prev(fii, testf, ud);
-//}
+static bool ida_func_item_iterator_prev(IntPtr fii, IntPtr testf, IntPtr ud)
+{
+	return func_item_iterator_prev((func_item_iterator_t*)(fii.ToPointer()), (testf_t*)(testf.ToPointer()), (void*)(ud.ToPointer()));
+}
 
-// static bool ida_func_item_iterator_decode_prev_insn(func_item_iterator_t* fii, insn_t* out)
-//{
-//	return func_item_iterator_decode_prev_insn(fii, out);
-//}
+static bool ida_func_item_iterator_decode_prev_insn(IntPtr fii, IntPtr out)
+{
+	return func_item_iterator_decode_prev_insn((func_item_iterator_t*)(fii.ToPointer()), (insn_t*)(out.ToPointer()));
+}
 
-// static bool ida_func_item_iterator_decode_preceding_insn(func_item_iterator_t* fii, eavec_t* visited, bool* p_farref, insn_t* out)
-//{
-//	return func_item_iterator_decode_preceding_insn(fii, visited, p_farref, out);
-//}
+static bool ida_func_item_iterator_decode_preceding_insn(IntPtr fii, IntPtr visited, IntPtr p_farref, IntPtr out)
+{
+	return func_item_iterator_decode_preceding_insn((func_item_iterator_t*)(fii.ToPointer()), (eavec_t*)(visited.ToPointer()), (bool*)(p_farref.ToPointer()), (insn_t*)(out.ToPointer()));
+}
+
+static bool ida_func_item_iterator_succ(IntPtr fii, IntPtr testf, IntPtr ud)
+{
+	return func_item_iterator_succ((func_item_iterator_t*)(fii.ToPointer()), (testf_t*)(testf.ToPointer()), (void*)(ud.ToPointer()));
+}
 
 static bool ida_f_any(flags_t f, IntPtr p)
 {
 	return true;
 }
 
-// static bool ida_func_tail_iterator_set(func_tail_iterator_t* fti, func_t* pfn, ea_t ea)
-//{
-//	return func_tail_iterator_set(fti, pfn, ea);
-//}
-
-// static bool ida_func_tail_iterator_set_ea(func_tail_iterator_t* fti, ea_t ea)
-//{
-//	return func_tail_iterator_set_ea(fti, ea);
-//}
-
-// static bool ida_func_parent_iterator_set(func_parent_iterator_t* fpi, func_t* pfn)
-//{
-//	return func_parent_iterator_set(fpi, pfn);
-//}
-
-// static bool ida_func_item_iterator_next(func_item_iterator_t* fii, testf_t* testf, void* ud)
-//{
-//	return func_item_iterator_next(fii, testf, ud);
-//}
-
-// static bool ida_func_item_iterator_prev(func_item_iterator_t* fii, testf_t* testf, void* ud)
-//{
-//	return func_item_iterator_prev(fii, testf, ud);
-//}
-
-// static bool ida_func_item_iterator_decode_prev_insn(func_item_iterator_t* fii, insn_t* out)
-//{
-//	return func_item_iterator_decode_prev_insn(fii, out);
-//}
-
-// static bool ida_func_item_iterator_decode_preceding_insn(func_item_iterator_t* fii, eavec_t* visited, bool* p_farref, insn_t* out)
-//{
-//	return func_item_iterator_decode_preceding_insn(fii, visited, p_farref, out);
-//}
+static void ida_iterate_func_chunks(IntPtr pfn, Action_UInt64_UInt64___IntPtr^ func, IntPtr ud, bool include_parents)
+{
+	iterate_func_chunks((func_t*)(pfn.ToPointer()), static_cast<void (*)(ea_t, ea_t, void*)>(::System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(func).ToPointer()), (void*)(ud.ToPointer()), include_parents);
+}
 
 static ea_t ida_get_prev_func_addr(IntPtr pfn, ea_t ea)
 {
@@ -360,10 +321,10 @@ static void ida_read_regargs(IntPtr pfn)
 	return read_regargs((func_t*)(pfn.ToPointer()));
 }
 
-//static void ida_add_regarg(IntPtr pfn, int reg, ref tinfo_t tif, IntPtr name)
-//{
-//	return add_regarg((func_t*)(pfn.ToPointer()), reg, tif, (char*)(name.ToPointer()));
-//}
+static void ida_add_regarg(IntPtr pfn, int reg, IntPtr tif, IntPtr name)
+{
+	return add_regarg((func_t*)(pfn.ToPointer()), reg, *(tinfo_t*)(tif.ToPointer()), (char*)(name.ToPointer()));
+}
 
 static int ida_plan_to_apply_idasgn(IntPtr fname)
 {
@@ -395,20 +356,37 @@ static int ida_del_idasgn(int n)
 	return del_idasgn(n);
 }
 
-// static int32 ida_get_idasgn_desc(qstring* signame, qstring* optlibs, int n)
-//{
-//	return get_idasgn_desc(signame, optlibs, n);
-//}
+static int32 ida_get_idasgn_desc(IntPtr signame, IntPtr optlibs, int n)
+{
+	qstring buf;
+	qstring buf1;
+	auto ret = get_idasgn_desc(&buf, &buf1, n);
+	if (signame != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(buf, signame, buf.size() - 1);
+	}
+	if (optlibs != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(buf1, optlibs, buf1.size() - 1);
+	}
+	return ret;
+}
 
-// static idasgn_t* ida_get_idasgn_header_by_short_name(char* name)
-//{
-//	return get_idasgn_header_by_short_name(name);
-//}
+static IntPtr ida_get_idasgn_header_by_short_name(IntPtr name)
+{
+	return IntPtr((void*)get_idasgn_header_by_short_name((const char*)(name.ToPointer())));
+}
 
-// static ssize_t ida_get_idasgn_title(qstring* buf, char* name)
-//{
-//	return get_idasgn_title(buf, name);
-//}
+static ssize_t ida_get_idasgn_title(IntPtr buf, IntPtr name)
+{
+	qstring out;
+	auto size = get_idasgn_title(&out, (const char*)(name.ToPointer()));
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, size);
+	}
+	return size;
+}
 
 static void ida_determine_rtl()
 {
@@ -425,30 +403,6 @@ static int ida_try_to_add_libfunc(ea_t ea)
 	return try_to_add_libfunc(ea);
 }
 
-static size_t ida_func_t_size()
-{
-	return sizeof(func_t);
-}
-
-//static ea_t ida_get_func_ranges(rangeset_t* ranges, func_t* pfn)
-//{
-//
-//}
-
-//ssize_t ida_get_func_cmt(qstring* buf, const func_t* pfn, bool repeatable)
-//{
-//
-//}
-//
-//bool ida_set_func_cmt(const func_t* pfn, const char* cmt, bool repeatable)
-//{
-//
-//}
-
-//int ida_export set_func_name_if_jumpfunc(func_t* pfn, const char* oldname);
-//ea_t ida_export calc_thunk_func_target(func_t* pfn, ea_t* fptr);
-
-
 static void ida_save_signatures()
 {
 }
@@ -457,6 +411,36 @@ static void ida_save_signatures()
 //{
 //	return invalidate_sp_analysis(get_func(ea));
 //}
+
+// marshaling
+static size_t ida_func_t_size()
+{
+	return sizeof(func_t);
+}
+
+static ea_t ida_get_func_start_ea(IntPtr func)
+{
+	func_t* f = (func_t*)(func.ToPointer());
+	return f->start_ea;
+}
+
+static ea_t ida_get_func_end_ea(IntPtr func)
+{
+	func_t* f = (func_t*)(func.ToPointer());
+	return f->end_ea;
+}
+
+static UInt64 ida_get_func_flags(IntPtr func)
+{
+	func_t* f = (func_t*)(func.ToPointer());
+	return f->flags;
+}
+
+static asize_t ida_get_func_size(IntPtr func)
+{
+	func_t* f = (func_t*)(func.ToPointer());
+	return calc_func_size(f);
+}
 
 static int ida_get_tail_refqty(IntPtr pfn)
 {
