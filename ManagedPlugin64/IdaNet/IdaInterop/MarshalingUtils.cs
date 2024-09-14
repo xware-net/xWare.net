@@ -103,6 +103,16 @@ namespace IdaNet.IdaInterop
             Marshal.WriteIntPtr(nativePointer, ea64Offset, value);
         }
 
+        internal static UIntPtr GetUIntPtr(IntPtr nativePointer, ushort ea64Offset)
+        {
+            return (UIntPtr)Marshal.ReadIntPtr(nativePointer, ea64Offset);
+        }
+
+        internal static void SetUIntPtr(IntPtr nativePointer, ushort ea64Offset, UIntPtr value)
+        {
+            Marshal.WriteIntPtr(nativePointer, ea64Offset, (IntPtr)value);
+        }
+
         internal static asize_t GetMemoryChunkSize(IntPtr nativePointer, ushort ea64Offset)
         {
             return (asize_t)Marshal.ReadInt64(nativePointer, ea64Offset);
@@ -162,7 +172,6 @@ namespace IdaNet.IdaInterop
         internal static void SetUShort(IntPtr nativePointer, ushort ea64Offset, ushort value)
         {
             Marshal.WriteInt16(nativePointer, ea64Offset, (short)value);
-            return;
         }
 
         internal static UInt32 GetUInt32(IntPtr nativePointer, ushort ea64Offset)
@@ -175,11 +184,16 @@ namespace IdaNet.IdaInterop
             return (UInt64)Marshal.ReadInt64(nativePointer, ea64Offset);
         }
 
-        internal static void WriteByte(IntPtr nativePointer, ushort ea64Offset, byte value)
+        internal static void SetUInt64(IntPtr nativePointer, ushort ea64Offset, UInt64 value)
         {
-            Marshal.WriteByte(nativePointer, ea64Offset, value);
-            return;
+            Marshal.WriteInt64(nativePointer, ea64Offset, (Int64)value);
         }
+
+        //internal static void WriteByte(IntPtr nativePointer, ushort ea64Offset, byte value)
+        //{
+        //    Marshal.WriteByte(nativePointer, ea64Offset, value);
+        //    return;
+        //}
 
         /// <summary>
         /// Convert an IntPtr to a string array
