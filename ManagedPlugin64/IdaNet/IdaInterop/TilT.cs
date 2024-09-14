@@ -20,7 +20,7 @@ using System.IO;
 
 namespace IdaNet.IdaInterop
 {
-    public enum til_t_flags : uint
+    public enum TilTFlags : uint
     {
         TIL_ZIP = 0x0001,  ///< pack buckets using zip
         TIL_MAC = 0x0002,  ///< til has macro table
@@ -33,7 +33,7 @@ namespace IdaNet.IdaInterop
         TIL_SLD = 0x0100,  ///< sizeof(long double)
     }
 
-    public struct til_bucket_t
+    public struct TilBucketT
     {
         private readonly BinaryReader Reader;
         private readonly List<object> Types;
@@ -42,23 +42,23 @@ namespace IdaNet.IdaInterop
         public Int32 NDefs;
         private readonly Int32 Size;
 
-        public til_bucket_t(UInt32 flags, BinaryReader reader)
+        public TilBucketT(UInt32 flags, BinaryReader reader)
         {
             this.Reader = reader;
             Types = new();
-            if ((flags & (uint)til_t_flags.TIL_ORD) != 0)
+            if ((flags & (uint)TilTFlags.TIL_ORD) != 0)
             {
                 NOrds = reader.ReadUInt32();
             }
 
-            if ((flags & (uint)til_t_flags.TIL_ALI) != 0)
+            if ((flags & (uint)TilTFlags.TIL_ALI) != 0)
             {
                 // aliases presnt
             }
 
             NDefs = reader.ReadInt32();
             Size = reader.ReadInt32();
-            if ((flags & (uint)til_t_flags.TIL_ZIP) != 0)
+            if ((flags & (uint)TilTFlags.TIL_ZIP) != 0)
             {
                 var csize = reader.ReadInt32();
                 // mircea
@@ -87,7 +87,7 @@ namespace IdaNet.IdaInterop
         }
     }
 
-    public struct til_stream_t
+    public struct TilStreamT
     {
 
     }
@@ -100,12 +100,12 @@ namespace IdaNet.IdaInterop
             bases = new List<TilT> ();
             cc = new compiler_info_t(MarshalingUtils.GetBytes(UnmanagedPtr, 36, 10));
 
-            using StreamReader sr = new(@"c:\idafreeware83\til\pc\" + name + ".til");
+            using StreamReader sr = new(@"c:\idafreeware84\til\pc\" + name + ".til");
             using BinaryReader br = new(sr.BaseStream);
 
-            syms = new til_bucket_t(flags & 0xcf, br);
-            types = new til_bucket_t(flags, br);
-            macros = new til_bucket_t(flags & 0xcf, br);
+            syms = new TilBucketT(flags & 0xcf, br);
+            types = new TilBucketT(flags, br);
+            macros = new TilBucketT(flags & 0xcf, br);
         }
 
         public IntPtr UnmanagedPtr { get; set; }
@@ -131,21 +131,21 @@ namespace IdaNet.IdaInterop
                                             /// Has the til been modified? (#TIL_MOD)
         public bool is_dirty()
         {
-            return (flags & (uint)(til_t_flags.TIL_MOD)) != 0;
+            return (flags & (uint)(TilTFlags.TIL_MOD)) != 0;
         }
 
         /// Mark the til as modified (#TIL_MOD)
         public void set_dirty()
         {
-            flags |= (uint)(til_t_flags.TIL_MOD);
+            flags |= (uint)(TilTFlags.TIL_MOD);
         }
 
         compiler_info_t cc;                 ///< information about the target compiler
-        til_bucket_t syms;                  ///< symbols
-        til_bucket_t types;                 ///< types
-        til_bucket_t macros;                ///< macros
+        TilBucketT syms;                  ///< symbols
+        TilBucketT types;                 ///< types
+        TilBucketT macros;                ///< macros
         int nrefs = 0;                      ///< number of references to the til
         int nstreams = 0;                   ///< number of extra streams
-        List<til_stream_t> streams;         ///< symbol stream storage
+        List<TilStreamT> streams;         ///< symbol stream storage
     }
 }

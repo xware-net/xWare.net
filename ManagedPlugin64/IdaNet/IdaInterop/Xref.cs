@@ -20,7 +20,7 @@ using static IdaPlusPlus.IdaInterop;
 namespace IdaNet.IdaInterop
 {
     /// CODE xref types
-    public enum cref_t
+    public enum CrefT
     {
         fl_U,                         ///< unknown -- for compatibility with old
                                       ///< versions. Should not be used anymore.
@@ -38,7 +38,7 @@ namespace IdaNet.IdaInterop
     };
 
     /// DATA xref types
-    public enum dref_t
+    public enum DrefT
     {
         dr_U,                         ///< Unknown -- for compatibility with old
                                       ///< versions. Should not be used anymore.
@@ -59,7 +59,7 @@ namespace IdaNet.IdaInterop
         dr_S,                         ///< Reference to enum member (symbolic constant)
     };
 
-    public class XRefblk_t
+    public class XRefblkT
     {
         public IntPtr UnmanagedPtr { get; set; }
 
@@ -67,7 +67,7 @@ namespace IdaNet.IdaInterop
         internal const int XREF_FAR = 0x01; // don't return ordinary flow xrefs
         internal const int XREF_DATA = 0x02; // return data references only
 
-        internal XRefblk_t(IntPtr ptr)
+        internal XRefblkT(IntPtr ptr)
         {
             UnmanagedPtr = ptr;
         }
