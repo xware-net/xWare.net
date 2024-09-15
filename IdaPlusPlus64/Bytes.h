@@ -127,17 +127,12 @@ static size_t ida_get_ida_string(IntPtr buffer, ea_t ea)
 	}
 }
 
-//static flags_t ida_get_flags(ea_t ea)
-//{
-//	return get_flags_ex(ea, 0);
-//}
-
-//static bool ida_has_name(flags_t F)
+//static bool ida_has_name(flags64_t F)
 //{
 //	return has_name(F);
 //}
 
-//static bool ida_has_cmt(flags_t F)
+//static bool ida_has_cmt(flags64_t F)
 //{
 //	return has_cmt(F);
 //}
@@ -287,27 +282,27 @@ static bool ida_is_mapped(ea_t ea)
 	return is_mapped(ea);
 }
 
-static flags_t ida_get_flags_ex(ea_t ea, int how)
+static flags64_t ida_get_flags_ex(ea_t ea, int how)
 {
 	return get_flags_ex(ea, how);
 }
 
-static flags_t ida_get_flags(ea_t ea)
+static flags64_t ida_get_flags(ea_t ea)
 {
 	return get_flags_ex(ea, 0);
 }
 
-static flags_t ida_get_full_flags(ea_t ea)
+static flags64_t ida_get_full_flags(ea_t ea)
 {
 	return get_flags_ex(ea, GFE_VALUE);
 }
 
-static flags_t ida_get_item_flag(ea_t from, int n, ea_t ea, bool appzero)
+static flags64_t ida_get_item_flag(ea_t from, int n, ea_t ea, bool appzero)
 {
 	return get_item_flag(from, n, ea, appzero);
 }
 
-static bool ida_has_value(flags_t F)
+static bool ida_has_value(flags64_t F)
 {
 	return (F & FF_IVL) != 0;
 }
@@ -501,47 +496,57 @@ static void ida_patch_bytes(ea_t ea, IntPtr ptr, size_t size)
 	patch_bytes(ea, buf, size);
 }
 
-static bool ida_is_code(flags_t F) 
+static bool ida_is_code(flags64_t F) 
 { 
 	return (F & MS_CLS) == FF_CODE; 
 }
 
-static bool ida_f_is_code(flags_t F, IntPtr ptr) 
+static bool ida_f_is_code(flags64_t F, IntPtr ptr) 
 { 
 	return is_code(F); 
 }
 
-static bool ida_is_tail(flags_t F) 
+static bool ida_is_data(flags64_t F)
+{
+	return (F & MS_CLS) == FF_DATA;
+}
+
+static bool ida_f_is_data(flags64_t F, IntPtr ptr)
+{
+	return is_data(F);
+}
+
+static bool ida_is_tail(flags64_t F)
 { 
 	return (F & MS_CLS) == FF_TAIL; 
 }
 
-static bool ida_f_is_tail(flags_t F, IntPtr ptr) 
+static bool ida_f_is_tail(flags64_t F, IntPtr ptr) 
 { 
 	return is_tail(F); 
 }
 
-static bool ida_is_not_tail(flags_t F) 
+static bool ida_is_not_tail(flags64_t F) 
 { 
 	return !is_tail(F); 
 }
 
-static bool ida_f_is_not_tail(flags_t F,IntPtr ptr) 
+static bool ida_f_is_not_tail(flags64_t F,IntPtr ptr) 
 { 
 	return is_not_tail(F); 
 }
 
-static bool ida_is_unknown(flags_t F) 
+static bool ida_is_unknown(flags64_t F) 
 { 
 	return (F & MS_CLS) == FF_UNK; 
 }
 
-static bool ida_is_head(flags_t F) 
+static bool ida_is_head(flags64_t F) 
 { 
 	return (F & FF_DATA) != 0; 
 }
 
-static bool ida_f_is_head(flags_t F, IntPtr ptr) 
+static bool ida_f_is_head(flags64_t F, IntPtr ptr) 
 { 
 	return is_head(F); 
 }
@@ -562,82 +567,82 @@ static bool ida_is_manual_insn(ea_t ea)
 
 // void ida_export set_manual_insn(ea_t ea, const char *manual_insn)
 
-static bool ida_is_flow(flags_t F)
+static bool ida_is_flow(flags64_t F)
 {
 	return (F & FF_FLOW) != 0;
 }
 
-static bool ida_has_extra_cmts(flags_t F)
+static bool ida_has_extra_cmts(flags64_t F)
 {
 	return (F & FF_LINE) != 0;
 }
 
-static bool ida_f_has_extra_cmts(flags_t f, IntPtr ptr)
+static bool ida_f_has_extra_cmts(flags64_t f, IntPtr ptr)
 {
 	return has_extra_cmts(f);
 }
 
-static bool ida_has_cmt(flags_t F)
+static bool ida_has_cmt(flags64_t F)
 {
 	return (F & FF_COMM) != 0;
 }
 
-static bool ida_f_has_cmt(flags_t f, IntPtr ptr)
+static bool ida_f_has_cmt(flags64_t f, IntPtr ptr)
 {
 	return has_cmt(f);
 }
 
-static bool ida_has_xref(flags_t F)
+static bool ida_has_xref(flags64_t F)
 {
 	return (F & FF_REF) != 0;
 }
 
-static bool ida_f_has_xref(flags_t f, IntPtr ptr)
+static bool ida_f_has_xref(flags64_t f, IntPtr ptr)
 {
 	return has_xref(f);
 }
 
-static bool ida_has_name(flags_t F)
+static bool ida_has_name(flags64_t F)
 {
 	return (F & FF_NAME) != 0;
 }
 
-static bool ida_f_has_name(flags_t f, IntPtr ptr)
+static bool ida_f_has_name(flags64_t f, IntPtr ptr)
 {
 	return has_name(f);
 }
 
-static bool ida_has_dummy_name(flags_t F)
+static bool ida_has_dummy_name(flags64_t F)
 {
 	return (F & FF_ANYNAME) == FF_LABL;
 }
 
-static bool ida_f_has_dummy_name(flags_t f, IntPtr ptr)
+static bool ida_f_has_dummy_name(flags64_t f, IntPtr ptr)
 {
 	return has_dummy_name(f);
 }
 
-static bool ida_has_auto_name(flags_t F)
+static bool ida_has_auto_name(flags64_t F)
 {
 	return (F & FF_ANYNAME) == FF_ANYNAME;
 }
 
-static bool ida_has_any_name(flags_t F)
+static bool ida_has_any_name(flags64_t F)
 {
 	return (F & FF_ANYNAME) != 0;
 }
 
-static bool ida_has_user_name(flags_t F)
+static bool ida_has_user_name(flags64_t F)
 {
 	return (F & FF_ANYNAME) == FF_NAME;
 }
 
-static bool ida_f_has_user_name(flags_t F, IntPtr ptr)
+static bool ida_f_has_user_name(flags64_t F, IntPtr ptr)
 {
 	return has_user_name(F);
 }
 
-static bool ida_is_invsign(ea_t ea, flags_t F, int n)
+static bool ida_is_invsign(ea_t ea, flags64_t F, int n)
 {
 	return is_invsign(ea, F, n);
 }
@@ -647,7 +652,7 @@ static bool ida_toggle_sign(ea_t ea, int n)
 	return toggle_sign(ea, n);
 }
 
-static bool ida_is_bnot(ea_t ea, flags_t F, int n)
+static bool ida_is_bnot(ea_t ea, flags64_t F, int n)
 {
 	return is_bnot(ea, F, n);
 }
@@ -682,182 +687,182 @@ static bool ida_leading_zero_important(ea_t ea, int n)
 	return leading_zero_important(ea, n);
 }
 
-static bool ida_is_defarg0(flags_t F)
+static bool ida_is_defarg0(flags64_t F)
 {
 	return (F & MS_0TYPE) != FF_0VOID;
 }
 
-static bool ida_is_defarg1(flags_t F)
+static bool ida_is_defarg1(flags64_t F)
 {
 	return (F & MS_1TYPE) != FF_1VOID;
 }
 
-static bool ida_is_off0(flags_t F)
+static bool ida_is_off0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0OFF;
 }
 
-static bool ida_is_off1(flags_t F)
+static bool ida_is_off1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1OFF;
 }
 
-static bool ida_is_char0(flags_t F)
+static bool ida_is_char0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0CHAR;
 }
 
-static bool ida_is_char1(flags_t F)
+static bool ida_is_char1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1CHAR;
 }
 
-static bool ida_is_seg0(flags_t F)
+static bool ida_is_seg0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0SEG;
 }
 
-static bool ida_is_seg1(flags_t F)
+static bool ida_is_seg1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1SEG;
 }
 
-static bool ida_is_enum0(flags_t F)
+static bool ida_is_enum0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0ENUM;
 }
 
-static bool ida_is_enum1(flags_t F)
+static bool ida_is_enum1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1ENUM;
 }
 
-static bool ida_is_stroff0(flags_t F)
+static bool ida_is_stroff0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0STRO;
 }
 
-static bool ida_is_stroff1(flags_t F)
+static bool ida_is_stroff1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1STRO;
 }
 
-static bool ida_is_stkvar0(flags_t F)
+static bool ida_is_stkvar0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0STK;
 }
 
-static bool ida_is_stkvar1(flags_t F)
+static bool ida_is_stkvar1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1STK;
 }
 
-static bool ida_is_float0(flags_t F)
+static bool ida_is_float0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0FLT;
 }
 
-static bool ida_is_float1(flags_t F)
+static bool ida_is_float1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1FLT;
 }
 
-static bool ida_is_custfmt0(flags_t F)
+static bool ida_is_custfmt0(flags64_t F)
 {
 	return (F & MS_0TYPE) == FF_0CUST;
 }
 
-static bool ida_is_custfmt1(flags_t F)
+static bool ida_is_custfmt1(flags64_t F)
 {
 	return (F & MS_1TYPE) == FF_1CUST;
 }
 
-static bool ida_is_numop0(flags_t F)
+static bool ida_is_numop0(flags64_t F)
 {
 	return is_numop0(F);
 }
 
-static bool ida_is_numop1(flags_t F)
+static bool ida_is_numop1(flags64_t F)
 {
 	return is_numop1(F);
 }
 
-static flags_t ida_get_optype_flags0(flags_t F) 
+static flags64_t ida_get_optype_flags0(flags64_t F) 
 { 
 	return F & MS_0TYPE; 
 }
 
-static flags_t ida_get_optype_flags1(flags_t F) 
+static flags64_t ida_get_optype_flags1(flags64_t F) 
 { 
 	return F & MS_1TYPE; 
 }
 
-static bool ida_is_defarg(flags_t F, int n)
+static bool ida_is_defarg(flags64_t F, int n)
 {
 	return is_defarg(F, n);
 }
 
-static bool ida_is_off(flags_t F, int n)
+static bool ida_is_off(flags64_t F, int n)
 {
 	return is_off(F, n);
 }
 
-static bool ida_is_char(flags_t F, int n)
+static bool ida_is_char(flags64_t F, int n)
 {
 	return is_char(F, n);
 }
 
-static bool ida_is_seg(flags_t F, int n)
+static bool ida_is_seg(flags64_t F, int n)
 {
 	return is_seg(F, n);
 }
 
-static bool ida_is_enum(flags_t F, int n)
+static bool ida_is_enum(flags64_t F, int n)
 {
 	return is_enum(F, n);
 }
 
-static bool ida_is_manual(flags_t F, int n)
+static bool ida_is_manual(flags64_t F, int n)
 {
 	return is_manual(F, n);
 }
 
-static bool ida_is_stroff(flags_t F, int n)
+static bool ida_is_stroff(flags64_t F, int n)
 {
 	return is_stroff(F, n);
 }
 
-static bool ida_is_stkvar(flags_t F, int n)
+static bool ida_is_stkvar(flags64_t F, int n)
 {
 	return is_stkvar(F, n);
 }
 
-static bool ida_is_fltnum(flags_t F, int n)
+static bool ida_is_fltnum(flags64_t F, int n)
 {
 	return is_fltnum(F, n);
 }
 
-static bool ida_is_custfmt(flags_t F, int n)
+static bool ida_is_custfmt(flags64_t F, int n)
 {
 	return is_custfmt(F, n);
 }
 
-static bool ida_is_numop(flags_t F, int n)
+static bool ida_is_numop(flags64_t F, int n)
 {
 	return is_numop(F, n);
 }
 
-static bool ida_is_suspop(ea_t ea, flags_t F, int n)
+static bool ida_is_suspop(ea_t ea, flags64_t F, int n)
 {
 	return is_suspop(ea, F, n);
 }
 
-static bool ida_op_adds_xrefs(flags_t F, int n)
+static bool ida_op_adds_xrefs(flags64_t F, int n)
 {
 	return op_adds_xrefs(F, n);
 }
 
-static bool ida_set_op_type(ea_t ea, flags_t type, int n)
+static bool ida_set_op_type(ea_t ea, flags64_t type, int n)
 {
 	return set_op_type(ea, type, n);
 }
@@ -897,67 +902,67 @@ static bool ida_is_forced_operand(ea_t ea, int n)
 	return is_forced_operand(ea, n);
 }
 
-static flags_t ida_char_flag()
+static flags64_t ida_char_flag()
 {
 	return FF_1CHAR | FF_0CHAR;
 }
 
-static flags_t ida_off_flag()
+static flags64_t ida_off_flag()
 {
 	return FF_1OFF | FF_0OFF;
 }
 
-static flags_t ida_enum_flag()
+static flags64_t ida_enum_flag()
 {
 	return FF_1ENUM | FF_0ENUM;
 }
 
-static flags_t ida_stroff_flag()
+static flags64_t ida_stroff_flag()
 {
 	return FF_1STRO | FF_0STRO;
 }
 
-static flags_t ida_stkvar_flag()
+static flags64_t ida_stkvar_flag()
 {
 	return FF_1STK | FF_0STK;
 }
 
-static flags_t ida_flt_flag()
+static flags64_t ida_flt_flag()
 {
 	return FF_1FLT | FF_0FLT;
 }
 
-static flags_t ida_custfmt_flag()
+static flags64_t ida_custfmt_flag()
 {
 	return FF_1CUST | FF_0CUST;
 }
 
-static flags_t ida_seg_flag()
+static flags64_t ida_seg_flag()
 {
 	return FF_1SEG | FF_0SEG;
 }
 
-static flags_t ida_num_flag()
+static flags64_t ida_num_flag()
 {
 	return num_flag();
 }
 
-static flags_t ida_hex_flag()
+static flags64_t ida_hex_flag()
 {
 	return FF_1NUMH | FF_0NUMH;
 }
 
-static flags_t ida_dec_flag()
+static flags64_t ida_dec_flag()
 {
 	return FF_1NUMD | FF_0NUMD;
 }
 
-static flags_t ida_oct_flag()
+static flags64_t ida_oct_flag()
 {
 	return FF_1NUMO | FF_0NUMO;
 }
 
-static flags_t ida_bin_flag()
+static flags64_t ida_bin_flag()
 {
 	return FF_1NUMB | FF_0NUMB;
 }
@@ -1012,252 +1017,252 @@ static int ida_get_default_radix()
 	return get_default_radix();
 }
 
-static int ida_get_radix(flags_t F, int n)
+static int ida_get_radix(flags64_t F, int n)
 {
 	return get_radix(F, n);
 }
 
-static flags_t ida_code_flag()
+static flags64_t ida_code_flag()
 {
 	return FF_CODE;
 }
 
-static flags_t ida_byte_flag()
+static flags64_t ida_byte_flag()
 {
 	return FF_DATA | FF_BYTE;
 }
 
-static flags_t ida_word_flag()
+static flags64_t ida_word_flag()
 {
 	return FF_DATA | FF_WORD;
 }
 
-static flags_t ida_dword_flag()
+static flags64_t ida_dword_flag()
 {
 	return FF_DATA | FF_DWORD;
 }
 
-static flags_t ida_qword_flag()
+static flags64_t ida_qword_flag()
 {
 	return FF_DATA | FF_QWORD;
 }
 
-static flags_t ida_oword_flag()
+static flags64_t ida_oword_flag()
 {
 	return FF_DATA | FF_OWORD;
 }
 
-static flags_t ida_yword_flag()
+static flags64_t ida_yword_flag()
 {
 	return FF_DATA | FF_YWORD;
 }
 
-static flags_t ida_zword_flag()
+static flags64_t ida_zword_flag()
 {
 	return FF_DATA | FF_ZWORD;
 }
 
-static flags_t ida_tbyte_flag()
+static flags64_t ida_tbyte_flag()
 {
 	return FF_DATA | FF_TBYTE;
 }
 
-static flags_t ida_strlit_flag()
+static flags64_t ida_strlit_flag()
 {
 	return FF_DATA | FF_STRLIT;
 }
 
-static flags_t ida_stru_flag()
+static flags64_t ida_stru_flag()
 {
 	return FF_DATA | FF_STRUCT;
 }
 
-static flags_t ida_cust_flag()
+static flags64_t ida_cust_flag()
 {
 	return FF_DATA | FF_CUSTOM;
 }
 
-static flags_t ida_align_flag()
+static flags64_t ida_align_flag()
 {
 	return FF_DATA | FF_ALIGN;
 }
 
-static flags_t ida_float_flag()
+static flags64_t ida_float_flag()
 {
 	return FF_DATA | FF_FLOAT;
 }
 
-static flags_t ida_double_flag()
+static flags64_t ida_double_flag()
 {
 	return FF_DATA | FF_DOUBLE;
 }
 
-static flags_t ida_packreal_flag()
+static flags64_t ida_packreal_flag()
 {
 	return FF_DATA | FF_PACKREAL;
 }
 
-static bool ida_is_byte(flags_t F)
+static bool ida_is_byte(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_BYTE;
 }
 
-static bool ida_is_word(flags_t F)
+static bool ida_is_word(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_WORD;
 }
 
-static bool ida_is_dword(flags_t F)
+static bool ida_is_dword(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_DWORD;
 }
 
-static bool ida_is_qword(flags_t F)
+static bool ida_is_qword(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_QWORD;
 }
 
-static bool ida_is_oword(flags_t F)
+static bool ida_is_oword(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_OWORD;
 }
 
-static bool ida_is_yword(flags_t F)
+static bool ida_is_yword(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_YWORD;
 }
 
-static bool ida_is_zword(flags_t F)
+static bool ida_is_zword(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_ZWORD;
 }
 
-static bool ida_is_tbyte(flags_t F)
+static bool ida_is_tbyte(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_TBYTE;
 }
 
-static bool ida_is_float(flags_t F)
+static bool ida_is_float(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_FLOAT;
 }
 
-static bool ida_is_double(flags_t F)
+static bool ida_is_double(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_DOUBLE;
 }
 
-static bool ida_is_pack_real(flags_t F)
+static bool ida_is_pack_real(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_PACKREAL;
 }
 
-static bool ida_is_strlit(flags_t F)
+static bool ida_is_strlit(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_STRLIT;
 }
 
-static bool ida_is_struct(flags_t F)
+static bool ida_is_struct(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_STRUCT;
 }
 
-static bool ida_is_align(flags_t F)
+static bool ida_is_align(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_ALIGN;
 }
 
-static bool ida_is_custom(flags_t F)
+static bool ida_is_custom(flags64_t F)
 {
 	return is_data(F) && (F & DT_TYPE) == FF_CUSTOM;
 }
 
-static bool ida_f_is_byte(flags_t F, IntPtr ptr)
+static bool ida_f_is_byte(flags64_t F, IntPtr ptr)
 {
 	return is_byte(F);
 }
 
-static bool ida_f_is_word(flags_t F, IntPtr ptr)
+static bool ida_f_is_word(flags64_t F, IntPtr ptr)
 {
 	return is_word(F);
 }
 
-static bool ida_f_is_dword(flags_t F, IntPtr ptr)
+static bool ida_f_is_dword(flags64_t F, IntPtr ptr)
 {
 	return is_dword(F);
 }
 
-static bool ida_f_is_qword(flags_t F, IntPtr ptr)
+static bool ida_f_is_qword(flags64_t F, IntPtr ptr)
 {
 	return is_qword(F);
 }
 
-static bool ida_f_is_oword(flags_t F, IntPtr ptr)
+static bool ida_f_is_oword(flags64_t F, IntPtr ptr)
 {
 	return is_oword(F);
 }
 
-static bool ida_f_is_yword(flags_t F, IntPtr ptr)
+static bool ida_f_is_yword(flags64_t F, IntPtr ptr)
 {
 	return is_yword(F);
 }
 
-static bool ida_f_is_tbyte(flags_t F, IntPtr ptr)
+static bool ida_f_is_tbyte(flags64_t F, IntPtr ptr)
 {
 	return is_tbyte(F);
 }
 
-static bool ida_f_is_float(flags_t F, IntPtr ptr)
+static bool ida_f_is_float(flags64_t F, IntPtr ptr)
 {
 	return is_float(F);
 }
 
-static bool ida_f_is_double(flags_t F, IntPtr ptr)
+static bool ida_f_is_double(flags64_t F, IntPtr ptr)
 {
 	return is_double(F);
 }
 
-static bool ida_f_is_pack_real(flags_t F, IntPtr ptr)
+static bool ida_f_is_pack_real(flags64_t F, IntPtr ptr)
 {
 	return is_pack_real(F);
 }
 
-static bool ida_f_is_strlit(flags_t F, IntPtr ptr)
+static bool ida_f_is_strlit(flags64_t F, IntPtr ptr)
 {
 	return is_strlit(F);
 }
 
-static bool ida_f_is_struct(flags_t F, IntPtr ptr)
+static bool ida_f_is_struct(flags64_t F, IntPtr ptr)
 {
 	return is_struct(F);
 }
 
-static bool ida_f_is_align(flags_t F, IntPtr ptr)
+static bool ida_f_is_align(flags64_t F, IntPtr ptr)
 {
 	return is_align(F);
 }
 
-static bool ida_f_is_custom(flags_t F, IntPtr ptr)
+static bool ida_f_is_custom(flags64_t F, IntPtr ptr)
 {
 	return is_custom(F);
 }
 
-static bool ida_is_same_data_type(flags_t F1, flags_t F2)
+static bool ida_is_same_data_type(flags64_t F1, flags64_t F2)
 {
 	return ((F1 ^ F2) & DT_TYPE) == 0;
 }
 
-static flags_t ida_get_flags_by_size(size_t size)
+static flags64_t ida_get_flags_by_size(size_t size)
 {
 	return get_flags_by_size(size);
 }
 
-static bool ida_create_data(ea_t ea, flags_t dataflag, asize_t size, tid_t tid)
+static bool ida_create_data(ea_t ea, flags64_t dataflag, asize_t size, tid_t tid)
 {
 	return create_data(ea, dataflag, size, tid);
 }
 
-static flags_t ida_calc_dflags(flags_t f, bool force)
+static flags64_t ida_calc_dflags(flags64_t f, bool force)
 {
 	return f | (force ? FF_COMM : 0);
 }
@@ -1377,17 +1382,17 @@ static bool ida_create_strlit(ea_t start, size_t len, int32 strtype)
 }
 
 // to continue
-static bool ida_can_define_item(ea_t ea, asize_t length, flags_t flags)
+static bool ida_can_define_item(ea_t ea, asize_t length, flags64_t flags)
 {
 	return can_define_item(ea, length, flags);
 }
 
-static bool ida_has_immd(flags_t F)
+static bool ida_has_immd(flags64_t F)
 {
 	return is_code(F) && (F & FF_IMMD) != 0;
 }
 
-static bool ida_is_func(flags_t F)
+static bool ida_is_func(flags64_t F)
 {
 	return is_code(F) && (F & FF_FUNC) != 0;
 }

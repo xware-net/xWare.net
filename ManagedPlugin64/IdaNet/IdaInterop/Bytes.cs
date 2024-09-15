@@ -10,52 +10,53 @@ using AdiffT = System.Int64;
 using UvalT = System.UInt64;
 using BgcolorT = System.UInt32;
 using FlagsT = System.UInt32;
+using Flags64T = System.UInt64;
 
 using static IdaPlusPlus.IdaInterop;
 
 namespace IdaNet.IdaInterop
 {
-    public enum FFFlags : uint
+    public enum FFFlags : UInt64
     {
-        MS_VAL = 0x000000FF,
-        MS_CLS = 0x00000600,             ///< Mask for typing
-        FF_CODE = 0x00000600,             ///< Code ?
-        FF_DATA = 0x00000400,             ///< Data ?
-        FF_TAIL = 0x00000200,             ///< Tail ?
-        FF_UNK = 0x00000000,             ///< Unknown ?
+        MS_VAL = 0x00000000000000FF,
+        MS_CLS = 0x0000000000000600,             ///< Mask for typing
+        FF_CODE = 0x0000000000000600,             ///< Code ?
+        FF_DATA = 0x0000000000000400,             ///< Data ?
+        FF_TAIL = 0x0000000000000200,             ///< Tail ?
+        FF_UNK = 0x0000000000000000,             ///< Unknown ?
 
-        FF_IVL = 0x00000100,
-        FF_BYTE = 0x00000000,         ///< byte
-        FF_WORD = 0x10000000,         ///< word
-        FF_DWORD = 0x20000000,         ///< double word
-        FF_QWORD = 0x30000000,         ///< quadro word
-        FF_TBYTE = 0x40000000,         ///< tbyte
-        FF_STRLIT = 0x50000000,         ///< string literal
-        FF_STRUCT = 0x60000000,         ///< struct variable
-        FF_OWORD = 0x70000000,         ///< octaword/xmm word (16 bytes/128 bits)
-        FF_FLOAT = 0x80000000,         ///< float
-        FF_DOUBLE = 0x90000000,         ///< double
-        FF_PACKREAL = 0xA0000000,         ///< packed decimal real
-        FF_ALIGN = 0xB0000000,         ///< alignment directive
-        FF_CUSTOM = 0xD0000000,         ///< custom data type
-        FF_YWORD = 0xE0000000,         ///< ymm word (32 bytes/256 bits)
-        FF_ZWORD = 0xF0000000,         ///< zmm word (64 bytes/512 bits)
+        FF_IVL = 0x0000000000000100,
+        FF_BYTE = 0x0000000000000000,         ///< byte
+        FF_WORD = 0x0000000010000000,         ///< word
+        FF_DWORD = 0x0000000020000000,         ///< double word
+        FF_QWORD = 0x0000000030000000,         ///< quadro word
+        FF_TBYTE = 0x0000000040000000,         ///< tbyte
+        FF_STRLIT = 0x0000000050000000,         ///< string literal
+        FF_STRUCT = 0x0000000060000000,         ///< struct variable
+        FF_OWORD = 0x0000000070000000,         ///< octaword/xmm word (16 bytes/128 bits)
+        FF_FLOAT = 0x0000000080000000,         ///< float
+        FF_DOUBLE = 0x0000000090000000,         ///< double
+        FF_PACKREAL = 0x00000000A0000000,         ///< packed decimal real
+        FF_ALIGN = 0x00000000B0000000,         ///< alignment directive
+        FF_CUSTOM = 0x00000000D0000000,         ///< custom data type
+        FF_YWORD = 0x00000000E0000000,         ///< ymm word (32 bytes/256 bits)
+        FF_ZWORD = 0x00000000F0000000,         ///< zmm word (64 bytes/512 bits)
 
-        DT_TYPE = 0xF0000000,             //< Mask for DATA typing
-        MS_COMM = 0x000FF800,            //< Mask of common bits
-        FF_COMM = 0x00000800,            //< Has comment ?
-        FF_REF = 0x00001000,            //< has references
-        FF_LINE = 0x00002000,            //< Has next or prev lines ?
-        FF_NAME = 0x00004000,            //< Has name ?
-        FF_LABL = 0x00008000,            //< Has dummy name?
-        FF_FLOW = 0x00010000,            //< Exec flow from prev instruction
-        FF_SIGN = 0x00020000,            //< Inverted sign of operands
-        FF_BNOT = 0x00040000,            //< Bitwise negation of operands
-        FF_UNUSED = 0x00080000,           //< unused bit (was used for variable bytes)
+        DT_TYPE = 0x00000000F0000000,             //< Mask for DATA typing
+        MS_COMM = 0x00000000000FF800,            //< Mask of common bits
+        FF_COMM = 0x0000000000000800,            //< Has comment ?
+        FF_REF = 0x0000000000001000,            //< has references
+        FF_LINE = 0x0000000000002000,            //< Has next or prev lines ?
+        FF_NAME = 0x0000000000004000,            //< Has name ?
+        FF_LABL = 0x0000000000008000,            //< Has dummy name?
+        FF_FLOW = 0x0000000000010000,            //< Exec flow from prev instruction
+        FF_SIGN = 0x0000000000020000,            //< Inverted sign of operands
+        FF_BNOT = 0x0000000000040000,            //< Bitwise negation of operands
+        FF_UNUSED = 0x0000000000080000,           //< unused bit (was used for variable bytes)
 
-        FF_FUNC = 0x10000000,             ///< function start?
-        FF_IMMD = 0x40000000,             ///< Has Immediate value ?
-        FF_JUMP = 0x80000000,             ///< Has jump table or switch_info?
+        FF_FUNC = 0x0000000010000000,             ///< function start?
+        FF_IMMD = 0x0000000040000000,             ///< Has Immediate value ?
+        FF_JUMP = 0x0000000080000000,             ///< Has jump table or switch_info?
     }
 
     public enum SetNameFlags : ushort
@@ -120,12 +121,12 @@ namespace IdaNet.IdaInterop
             return (EaT)ida_get_64bit(ea);
         }
 
-        internal static bool IsEa(FlagsT f)
+        internal static bool IsEa(Flags64T f)
         {
             return IsQword(f);
         }
 
-        internal static bool IsUnknown(FlagsT f)
+        internal static bool IsUnknown(Flags64T f)
         {
             return (f & (uint)FFFlags.MS_CLS) == (uint)FFFlags.FF_UNK;
         }
@@ -209,7 +210,7 @@ namespace IdaNet.IdaInterop
 
         internal static void FixFunction(EaT ea)
         {
-            FlagsT flags = ida_get_flags(ea);
+            Flags64T flags = ida_get_flags(ea);
 
             // No code here?
             if (!IsCode(flags))
@@ -231,37 +232,37 @@ namespace IdaNet.IdaInterop
             ida_del_items(ea, (int)DelItemsFlags.DELIT_EXPAND, (AsizeT)siz);
         }
 
-        internal static bool IsDword(FlagsT F)
+        internal static bool IsDword(Flags64T F)
         {
             return IsData(F) && (F & (uint)FFFlags.DT_TYPE) == (uint)FFFlags.FF_DWORD;
         }
 
-        internal static bool IsQword(FlagsT F)
+        internal static bool IsQword(Flags64T F)
         {
             return IsData(F) && (F & (uint)FFFlags.DT_TYPE) == (uint)FFFlags.FF_QWORD;
         }
 
-        internal static bool IsData(FlagsT F)
+        internal static bool IsData(Flags64T F)
         {
             return (F & (uint)FFFlags.MS_CLS) == (uint)FFFlags.FF_DATA;
         }
 
-        internal static bool IsCode(FlagsT F)
+        internal static bool IsCode(Flags64T F)
         {
             return (F & (uint)FFFlags.MS_CLS) == (uint)FFFlags.FF_CODE;
         }
 
-        internal static bool IsFunc(FlagsT F)
+        internal static bool IsFunc(Flags64T F)
         {
             return (F & (uint)FFFlags.MS_CLS) == (uint)FFFlags.FF_FUNC;
         }
 
-        internal static bool HasXref(FlagsT F)
+        internal static bool HasXref(Flags64T F)
         {
             return (F & (uint)FFFlags.FF_REF) != 0;
         }
 
-        internal static bool HasAnyName(FlagsT F)
+        internal static bool HasAnyName(Flags64T F)
         {
             return (F & ((uint)FFFlags.FF_NAME | (uint)FFFlags.FF_LABL)) != 0;
         }

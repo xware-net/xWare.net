@@ -14,6 +14,7 @@ using AdiffT = System.Int64;
 using UvalT = System.UInt64;
 using BgcolorT = System.UInt32;
 using FlagsT = System.UInt32;
+using Flags64T = System.UInt64;
 
 using static IdaPlusPlus.IdaInterop;
 using System.Drawing;
@@ -640,14 +641,12 @@ namespace IdaNet.IdaInterop
             Set(pfn, _ea);
         }
 
-        /// Set a function range. If pfn == null then a segment range will be set.
         public bool Set(IntPtr pfn, ulong _ea = BADADDR)
         {
             ea = (_ea != BADADDR || pfn == IntPtr.Zero) ? _ea : GetStartEA(pfn);
             return fti.Set(pfn, _ea);
         }
 
-        /// Set an arbitrary range
         public bool SetRange(ulong ea1, ulong ea2)
         {
             ea = ea1;
@@ -682,12 +681,12 @@ namespace IdaNet.IdaInterop
             return fti.Chunk;
         }
 
-        public bool Next(TestfDelegate func, IntPtr ud)
+        public bool Next(FlagTester func, IntPtr ud)
         {
             return FuncItemIteratorNext(this, func, ud);
         }
 
-        public bool Prev(TestfDelegate func, IntPtr ud)
+        public bool Prev(FlagTester func, IntPtr ud)
         {
             return FuncItemIteratorPrev(this, func, ud);
         }
@@ -752,7 +751,7 @@ namespace IdaNet.IdaInterop
             return FuncItemIteratorDecodePrecedingInsn(this, visited, pFarRef, outInsn);
         }
 
-        public bool Succ(TestfDelegate func, IntPtr ud)
+        public bool Succ(FlagTester func, IntPtr ud)
         {
             return FuncItemIteratorSucc(this, func, ud);
         }
@@ -762,17 +761,15 @@ namespace IdaNet.IdaInterop
             return Succ(FIsCode, IntPtr.Zero);
         }
 
-        // Delegate type for test functions
-        public delegate bool TestfDelegate(IntPtr func, IntPtr ud);
+        public delegate bool FlagTester(Flags64T flags, IntPtr ud);
 
-        // Placeholder for external functions
-        private bool FuncItemIteratorNext(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        private bool FuncItemIteratorNext(FuncItemIteratorT iterator, FlagTester func, IntPtr ud)
         {
             // Implement logic to handle "next" iteration
             return true; // Replace with actual implementation
         }
 
-        private bool FuncItemIteratorPrev(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        private bool FuncItemIteratorPrev(FuncItemIteratorT iterator, FlagTester func, IntPtr ud)
         {
             // Implement logic to handle "prev" iteration
             return true; // Replace with actual implementation
@@ -790,7 +787,7 @@ namespace IdaNet.IdaInterop
             return true; // Replace with actual implementation
         }
 
-        private bool FuncItemIteratorSucc(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        private bool FuncItemIteratorSucc(FuncItemIteratorT iterator, FlagTester func, IntPtr ud)
         {
             // Implement logic for successive iteration
             return true; // Replace with actual implementation
@@ -803,11 +800,11 @@ namespace IdaNet.IdaInterop
         }
 
         // Delegate stubs for test functions
-        private bool FAny(IntPtr func, IntPtr ud) { return true; }
-        private bool FIsHead(IntPtr func, IntPtr ud) { return true; }
-        private bool FIsCode(IntPtr func, IntPtr ud) { return true; }
-        private bool FIsData(IntPtr func, IntPtr ud) { return true; }
-        private bool FIsNotTail(IntPtr func, IntPtr ud) { return true; }
+        private bool FAny(Flags64T flags, IntPtr ud) { return true; }
+        private bool FIsHead(Flags64T flags, IntPtr ud) { return ida_is_head(flags); }
+        private bool FIsCode(Flags64T flags, IntPtr ud) { return ida_is_code(flags); }
+        private bool FIsData(Flags64T flags, IntPtr ud) { return ida_is_data(flags); }
+        private bool FIsNotTail(Flags64T flags, IntPtr ud) { return ida_is_not_tail(flags); }
 
         // Constants
         private const ulong BADADDR = 0xFFFFFFFFFFFFFFFF;

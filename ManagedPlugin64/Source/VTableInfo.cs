@@ -12,6 +12,7 @@ using asize_t = System.UInt64;
 using adiff_t = System.Int64;
 using uval_t = System.UInt64;
 using bgcolor_t = System.UInt32;
+using Flags64T = System.UInt64;
 
 using IdaNet.IdaInterop;
 
@@ -101,7 +102,7 @@ namespace ManagedPlugin.Source
                                                      // 000001FF
         internal const uint FF_IVL = 0x00000100;	// Has byte value in 000000FF
 
-        static void idaFlags2String(uint f, ref string s, bool withValue)
+        static void idaFlags2String(Flags64T f, ref string s, bool withValue)
         {
             s = string.Empty;
             //#define FTEST(_f) if(f & _f){ if(!first) s += ", "; s += #_f; first = FALSE; }
@@ -321,7 +322,7 @@ namespace ManagedPlugin.Source
             // Start of a vft should have an xref and a name (auto, or user, etc).
             // Ideal flags 32bit: FF_DWRD, FF_0OFF, FF_REF, FF_NAME, FF_DATA, FF_IVL
             //dumpFlags(ea);
-            uint flags = ida_get_flags(ea);
+            var flags = ida_get_flags(ea);
             if (Bytes.HasXref(flags) && Bytes.HasAnyName(flags) && (Bytes.IsEa(flags) || Bytes.IsUnknown(flags)))
             {
                 info = new VTableInfo();
@@ -338,7 +339,7 @@ namespace ManagedPlugin.Source
                     // Ideal flags for 32bit: FF_DWRD, FF_0OFF, FF_REF, FF_NAME, FF_DATA, FF_IVL
                     //PluginBase.WriteDebugMessage($"{ea:X16}\n");
                     //dumpFlags(ea);
-                    uint indexFlags = ida_get_flags(ea);
+                    var indexFlags = ida_get_flags(ea);
                     if (!(Bytes.IsEa(indexFlags) || Bytes.IsUnknown(indexFlags)))
                     {
                         //PluginBase.WriteDebugMessage($" ******* 1\n");
@@ -360,7 +361,7 @@ namespace ManagedPlugin.Source
                     }
 
                     // Should see code for a good vft method here, but it could be dirty
-                    uint flags1 = ida_get_flags(memberPtr);
+                    var flags1 = ida_get_flags(memberPtr);
                     if (!(Bytes.IsCode(flags1) || Bytes.IsUnknown(flags1)))
                     {
                         // New for version 2.5: there are rare cases where IDA hasn't fix unresolved bytes

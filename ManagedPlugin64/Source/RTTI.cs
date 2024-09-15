@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ea_t = System.UInt64;
-using tid_t = System.UInt64;
-using sel_t = System.UInt64;
-using size_t = System.UInt64;
-using asize_t = System.UInt64;
-using adiff_t = System.Int64;
-using uval_t = System.UInt64;
+using EaT = System.UInt64;
+using TidT = System.UInt64;
+using SelT = System.UInt64;
+using SizeT = System.UInt64;
+using AsizeT = System.UInt64;
+using AdiffT = System.Int64;
+using UvalT = System.UInt64;
+using Flags64T = System.UInt64;
 
 using IdaNet.IdaInterop;
 using System.Data.SqlTypes;
@@ -107,7 +108,7 @@ namespace ManagedPlugin.Source
             }
         }
 
-        public static bool AddStruct(ref StrucT struc, ref tid_t id, string name, string comment)
+        public static bool AddStruct(ref StrucT struc, ref TidT id, string name, string comment)
         {
             var ret = false;
 
@@ -138,7 +139,7 @@ namespace ManagedPlugin.Source
             return ret;
         }
 
-        public static int AddStrucMember(IntPtr sptr, IntPtr name, ea_t offset, uint flag, IntPtr type, asize_t nbytes)
+        public static int AddStrucMember(IntPtr sptr, IntPtr name, EaT offset, Flags64T flag, IntPtr type, AsizeT nbytes)
         {
             int r = ida_add_struc_member(sptr, name, offset, flag, type, nbytes);
             switch (r)
@@ -179,7 +180,7 @@ namespace ManagedPlugin.Source
             return (r);
         }
 
-        private static void AddMember2(StrucT structure, string ptr, ea_t offset, uint flags, IntPtr mtoffPtr, asize_t size)
+        private static void AddMember2(StrucT structure, string ptr, EaT offset, UInt64 flags, IntPtr mtoffPtr, AsizeT size)
         {
             IntPtr sptr = Marshal.StringToHGlobalAnsi(ptr);
             if (ida_add_struc_member(structure.UnmanagedPtr, sptr, offset, flags, mtoffPtr, size) != 0)
@@ -211,7 +212,7 @@ namespace ManagedPlugin.Source
                 if (AddStruct(ref structure, ref s_type_info_ID, "type_info", "RTTI std::type_info class (#classinformer)"))
                 {
                     AddMember2(structure, "vfptr", TypeInfo.OffsetOfVfptr(), ida_off_flag() | ida_qword_flag(), mtoffPtr, TypeInfo.OffsetOf_M_data() - TypeInfo.OffsetOfVfptr());
-                    AddMember2(structure, "_M_data", TypeInfo.OffsetOf_M_data(), ida_dword_flag(), IntPtr.Zero, sizeof(ea_t));
+                    AddMember2(structure, "_M_data", TypeInfo.OffsetOf_M_data(), ida_dword_flag(), IntPtr.Zero, sizeof(EaT));
 
                     // Name string zero size
                     OpinfoT mt = new OpinfoT();
@@ -283,9 +284,9 @@ namespace ManagedPlugin.Source
             }
         }
 
-        public static bool TryStructRTTI(ea_t ea, tid_t tid, string typeName = null, bool hasChd = false)
+        public static bool TryStructRTTI(EaT ea, TidT tid, string typeName = null, bool hasChd = false)
         {
-            if (tid == (tid_t)TypeIds.s_type_info_ID)
+            if (tid == (TidT)TypeIds.s_type_info_ID)
             {
                 if (!Bytes.HasName(ea))
                 {
@@ -298,7 +299,7 @@ namespace ManagedPlugin.Source
                     Bytes.SetUnknown(ea, structSize);
                     bool result = false;
                     if (ClassInformer.OptionPlaceStructs)
-                        result = Bytes.CreateStruct(ea, structSize, (tid_t)TypeIds.s_type_info_ID);
+                        result = Bytes.CreateStruct(ea, structSize, (TidT)TypeIds.s_type_info_ID);
                     if (!result)
                     {
                         Bytes.PutEa(ea + TypeInfo.OffsetOfVfptr());
@@ -308,7 +309,7 @@ namespace ManagedPlugin.Source
                     }
 
                     // sh!ft: End should be aligned
-                    ea_t end = (ea + TypeInfo.OffsetOf_M_d_name() + nameLen);
+                    EaT end = (ea + TypeInfo.OffsetOf_M_d_name() + nameLen);
                     if (end % 4 != 0)
                         ida_create_align(end, (4 - (end % 4)), 0);
 
@@ -317,14 +318,14 @@ namespace ManagedPlugin.Source
             }
             else
             {
-                if (tid == (tid_t)TypeIds.s_ClassHierarchyDescriptor_ID)
+                if (tid == (TidT)TypeIds.s_ClassHierarchyDescriptor_ID)
                 {
                     if (!Bytes.HasName(ea))
                     {
                         Bytes.SetUnknown(ea, RTTIClassHierarchyDescriptor.Size());
                         bool result = false;
                         if (ClassInformer.OptionPlaceStructs)
-                            result = Bytes.CreateStruct(ea, RTTIClassHierarchyDescriptor.Size(), (tid_t)TypeIds.s_ClassHierarchyDescriptor_ID);
+                            result = Bytes.CreateStruct(ea, RTTIClassHierarchyDescriptor.Size(), (TidT)TypeIds.s_ClassHierarchyDescriptor_ID);
                         if (!result)
                         {
                             Bytes.PutDword(ea + RTTIClassHierarchyDescriptor.OffsetOfSignature());
@@ -338,14 +339,14 @@ namespace ManagedPlugin.Source
                 }
                 else
                 {
-                    if (tid == (tid_t)TypeIds.s_PMD_ID)
+                    if (tid == (TidT)TypeIds.s_PMD_ID)
                     {
                         if (!Bytes.HasName(ea))
                         {
                             Bytes.SetUnknown(ea, PMD.Size());
                             bool result = false;
                             if (ClassInformer.OptionPlaceStructs)
-                                result = Bytes.CreateStruct(ea, PMD.Size(), (tid_t)TypeIds.s_PMD_ID);
+                                result = Bytes.CreateStruct(ea, PMD.Size(), (TidT)TypeIds.s_PMD_ID);
                             if (!result)
                             {
                                 Bytes.PutDword(ea + PMD.OffsetOfMdisp());
@@ -358,14 +359,14 @@ namespace ManagedPlugin.Source
                     }
                     else
                     {
-                        if (tid == (tid_t)TypeIds.s_CompleteObjectLocator_ID)
+                        if (tid == (TidT)TypeIds.s_CompleteObjectLocator_ID)
                         {
                             if (!Bytes.HasName(ea))
                             {
                                 Bytes.SetUnknown(ea, RTTICompleteObjectLocator.Size());
                                 bool result = false;
                                 if (ClassInformer.OptionPlaceStructs)
-                                    result = Bytes.CreateStruct(ea, RTTICompleteObjectLocator.Size(), (tid_t)TypeIds.s_CompleteObjectLocator_ID);
+                                    result = Bytes.CreateStruct(ea, RTTICompleteObjectLocator.Size(), (TidT)TypeIds.s_CompleteObjectLocator_ID);
                                 if (!result)
                                 {
                                     Bytes.PutDword(ea + RTTICompleteObjectLocator.OffsetOfSignature());
@@ -381,17 +382,17 @@ namespace ManagedPlugin.Source
                         }
                         else
                         {
-                            if (tid == (tid_t)TypeIds.s_BaseClassDescriptor_ID)
+                            if (tid == (TidT)TypeIds.s_BaseClassDescriptor_ID)
                             {
                                 // recursive
-                                TryStructRTTI(ea + RTTIBaseClassDescriptor.OffsetOfPmd(), (tid_t)TypeIds.s_PMD_ID);
+                                TryStructRTTI(ea + RTTIBaseClassDescriptor.OffsetOfPmd(), (TidT)TypeIds.s_PMD_ID);
 
                                 if (!Bytes.HasName(ea))
                                 {
                                     Bytes.SetUnknown(ea, RTTIBaseClassDescriptor.Size());
                                     bool result = false;
                                     if (ClassInformer.OptionPlaceStructs)
-                                        result = Bytes.CreateStruct(ea, RTTIBaseClassDescriptor.Size(), (tid_t)TypeIds.s_BaseClassDescriptor_ID);
+                                        result = Bytes.CreateStruct(ea, RTTIBaseClassDescriptor.Size(), (TidT)TypeIds.s_BaseClassDescriptor_ID);
                                     if (!result)
                                     {
                                         Bytes.PutDword(ea + RTTIBaseClassDescriptor.OffsetOfTypeDescriptor());
@@ -434,12 +435,12 @@ namespace ManagedPlugin.Source
 
         // Process RTTI vftable info
         // Returns TRUE if if vftable and wasn't named on entry
-        internal static bool processVftable(ea_t vft, ea_t col)
+        internal static bool processVftable(EaT vft, EaT col)
         {
             bool result = false;
 
-            ea_t colBase;
-            ea_t typeInfo;
+            EaT colBase;
+            EaT typeInfo;
             uint tdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfTypeDescriptor());
             uint objectLocator = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfObjectBase());
             colBase = (col - (UInt64)objectLocator);
@@ -452,7 +453,7 @@ namespace ManagedPlugin.Source
                 //PluginBase.WriteDebugMessage($"{vi.ea_begin:X16} - {vi.ea_end:X16} c: {vi.methodCount}\n");
 
                 // Get COL type name
-                ea_t chd;
+                EaT chd;
                 uint cdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
                 chd = (colBase + (UInt64)cdOffset);
 
@@ -652,14 +653,14 @@ namespace ManagedPlugin.Source
                             }
 
                             // COL name
-                            if (!Bytes.HasName((ea_t)col))
+                            if (!Bytes.HasName((EaT)col))
                             {
                                 string decorated = string.Empty;
                                 decorated = FORMAT_RTTI_COL_PREFIX;
                                 decorated += combinedName;
                                 if (decorated.Length > DefineConstants.MAXSTR)
                                     decorated = decorated.Substring(0, DefineConstants.MAXSTR);
-                                Bytes.SetName((ea_t)col, decorated);
+                                Bytes.SetName((EaT)col, decorated);
                             }
 
                             // Build hierarchy string starting with parent
@@ -708,7 +709,7 @@ namespace ManagedPlugin.Source
                     RTTIChooser.AddTableEntry(vft, (ushort)(vi.methodCount), (ushort)((chdAttributes & 0xF) | (isTopLevel ? RTTI.IS_TOP_LEVEL : 0)), entryString);
 
                     // Add a separating comment above RTTI COL
-                    ea_t colPtr = (vft - ClassInformer.GetPtrSize());
+                    EaT colPtr = (vft - ClassInformer.GetPtrSize());
                     Bytes.FixEa(colPtr);
                     cmt += string.Format($"  {attributeLabel(chdAttributes)} (#classinformer)");
                     if (!Bytes.HasAnteriorComment(colPtr))
@@ -780,13 +781,13 @@ namespace ManagedPlugin.Source
             public PMD m_pmd;
         };
 
-        public static void GetBCDInfo(ea_t col, ref List<bcdInfo> list, ref uint numBaseClasses)
+        public static void GetBCDInfo(EaT col, ref List<bcdInfo> list, ref uint numBaseClasses)
         {
             numBaseClasses = 0;
             uint cdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
             uint objectLocator = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfObjectBase());
-            ea_t colBase = (col - (UInt64)objectLocator);
-            ea_t chd = (colBase + (UInt64)cdOffset);
+            EaT colBase = (col - (UInt64)objectLocator);
+            EaT chd = (colBase + (UInt64)cdOffset);
 
             if (chd != 0)
             {
@@ -807,14 +808,14 @@ namespace ManagedPlugin.Source
                     //list.Resize(numBaseClasses);
                     // Get pointer
                     uint bcaOffset = ida_get_32bit(chd + RTTIClassHierarchyDescriptor.OffsetOfBaseClassArray());
-                    ea_t baseClassArray = (colBase + (UInt64)bcaOffset);
+                    EaT baseClassArray = (colBase + (UInt64)bcaOffset);
 
                     if (baseClassArray != DefineConstants.BADADDR)
                     {
                         for (int i = 0; i < numBaseClasses; i++, baseClassArray += 4)
                         {
                             uint bcdOffset = ida_get_32bit(baseClassArray);
-                            ea_t bcd = colBase + (UInt64)bcdOffset;
+                            EaT bcd = colBase + (UInt64)bcdOffset;
 
                             uint tdOffset = ida_get_32bit(bcd + RTTIBaseClassDescriptor.OffsetOfTypeDescriptor());
                             var typeInfo = colBase + (UInt64)tdOffset;
@@ -878,14 +879,14 @@ namespace ManagedPlugin.Source
     public struct TypeInfo
     {
         public IntPtr vfptr;	        // type_info class vftable
-        public ea_t _M_data;       // NULL until loaded at runtime
+        public EaT _M_data;       // NULL until loaded at runtime
         public string _M_d_name;   // Mangled name (prefix: .?AV=classes, .?AU=structs)
 
         public static ulong OffsetOfVfptr() { return 0; }
         public static ulong OffsetOf_M_data() { return 8; }
         public static ulong OffsetOf_M_d_name() { return 8 + 8; }
 
-        public static bool IsValid(ea_t typeInfo)
+        public static bool IsValid(EaT typeInfo)
         {
             //// TRUE if we've already seen it
             if (ClassInformer.tdSet.Contains(typeInfo))
@@ -894,11 +895,11 @@ namespace ManagedPlugin.Source
             if (ida_is_loaded(typeInfo))
             {
                 // Verify what should be a vftable
-                ea_t ea = Bytes.GetEa(typeInfo + TypeInfo.OffsetOfVfptr());
+                EaT ea = Bytes.GetEa(typeInfo + TypeInfo.OffsetOfVfptr());
                 if (ida_is_loaded(ea))
                 {
                     // _M_data should be NULL statically
-                    ea_t _M_data = DefineConstants.BADADDR;
+                    EaT _M_data = DefineConstants.BADADDR;
                     if (Bytes.GetVerifyEa((typeInfo + TypeInfo.OffsetOf_M_data()), ref _M_data))
                     {
                         if (_M_data == 0)
@@ -913,16 +914,16 @@ namespace ManagedPlugin.Source
         }
 
         // Read ASCII string from IDB at address
-        public static size_t GetIdaString(ea_t ea, ref string buffer)
+        public static SizeT GetIdaString(EaT ea, ref string buffer)
         {
             // Return cached name if it exists
             if (ClassInformer.stringCache.ContainsKey(ea))
             {
                 buffer = ClassInformer.stringCache[ea];
-                return (size_t)buffer.Length;
+                return (SizeT)buffer.Length;
             }
 
-            size_t requiredSize = ida_get_ida_string(IntPtr.Zero, ea);
+            SizeT requiredSize = ida_get_ida_string(IntPtr.Zero, ea);
             if (requiredSize > 0)
             {
                 IntPtr nativeBuffer = IntPtr.Zero;
@@ -939,7 +940,7 @@ namespace ManagedPlugin.Source
             return requiredSize;
         }
 
-        public static bool IsTypeName(ea_t ea)
+        public static bool IsTypeName(EaT ea)
         {
             //PluginBase.WriteDebugMessage($"     Check is type name at 0x{ea:X}");
             // Should start with a period
@@ -964,12 +965,12 @@ namespace ManagedPlugin.Source
             return false;
         }
 
-        public static size_t GetName(ea_t typeInfo, ref string buffer)
+        public static SizeT GetName(EaT typeInfo, ref string buffer)
         {
             return GetIdaString(typeInfo + TypeInfo.OffsetOf_M_d_name(), ref buffer);
         }
 
-        public static void TryStruct(ea_t typeInfo)
+        public static void TryStruct(EaT typeInfo)
         {
             // Only place once per address
             if (ClassInformer.tdSet.Contains(typeInfo))
@@ -979,9 +980,9 @@ namespace ManagedPlugin.Source
 
             // Get type name
             string name = string.Empty;
-            size_t nameLen = GetName(typeInfo, ref name);
+            SizeT nameLen = GetName(typeInfo, ref name);
 
-            RTTI.TryStructRTTI(typeInfo, (tid_t)TypeIds.s_type_info_ID, name);
+            RTTI.TryStructRTTI(typeInfo, (TidT)TypeIds.s_type_info_ID, name);
             if (nameLen > 0)
             {
                 if (!Bytes.HasName(typeInfo))
@@ -1024,7 +1025,7 @@ namespace ManagedPlugin.Source
         public static ulong OffsetOfAttributes() { return 4 + 4 + 4 + 4 + 4; }
         public static uint Size() { return 4 + 4 + 4 + 4 + 4 + 4; }
 
-        public static bool IsValid(ea_t bcd, ea_t colBase64)
+        public static bool IsValid(EaT bcd, EaT colBase64)
         {
             // TRUE if we've already seen it
             if (ClassInformer.bcdSet.Contains(bcd))
@@ -1041,7 +1042,7 @@ namespace ManagedPlugin.Source
                     {
                         // Check for valid type_info
                         uint tdOffset = ida_get_32bit(bcd + RTTIBaseClassDescriptor.OffsetOfTypeDescriptor());
-                        ea_t typeInfo = (colBase64 + (UInt64)tdOffset);
+                        EaT typeInfo = (colBase64 + (UInt64)tdOffset);
                         return TypeInfo.IsValid(typeInfo);
                     }
                 }
@@ -1050,14 +1051,14 @@ namespace ManagedPlugin.Source
             return false;
         }
 
-        public static void TryStruct(ea_t bcd, string baseClassName, ea_t colBase64)
+        public static void TryStruct(EaT bcd, string baseClassName, EaT colBase64)
         {
             // Only place it once
             if (ClassInformer.bcdSet.Contains(bcd))
             {
                 // Seen already, just return type name
                 uint tdOffset = ida_get_32bit(bcd + RTTIBaseClassDescriptor.OffsetOfTypeDescriptor());
-                ea_t typeInfo = (colBase64 + (UInt64)tdOffset);
+                EaT typeInfo = (colBase64 + (UInt64)tdOffset);
 
                 string buffer = null;
                 TypeInfo.GetName(typeInfo, ref buffer);
@@ -1070,17 +1071,17 @@ namespace ManagedPlugin.Source
             if (ida_is_loaded(bcd))
             {
                 uint attributes = ida_get_32bit(bcd + RTTIBaseClassDescriptor.OffsetOfAttributes());
-                RTTI.TryStructRTTI(bcd, (tid_t)TypeIds.s_BaseClassDescriptor_ID, null, ((attributes & RTTI.BCD_HASPCHD) > 0));
+                RTTI.TryStructRTTI(bcd, (TidT)TypeIds.s_BaseClassDescriptor_ID, null, ((attributes & RTTI.BCD_HASPCHD) > 0));
 
                 // Has appended CHD?
                 if ((attributes & RTTI.BCD_HASPCHD) != 0)
                 {
                     // yes, process it
-                    ea_t chdOffset = (bcd + (RTTIBaseClassDescriptor.OffsetOfAttributes() + sizeof(uint)));
+                    EaT chdOffset = (bcd + (RTTIBaseClassDescriptor.OffsetOfAttributes() + sizeof(uint)));
 
                     Bytes.FixDword(chdOffset);
                     uint chdOffset32 = ida_get_32bit(chdOffset);
-                    ea_t chd = (colBase64 + (UInt64)chdOffset32);
+                    EaT chd = (colBase64 + (UInt64)chdOffset32);
 
                     if (!Bytes.HasComment(chdOffset))
                     {
@@ -1095,7 +1096,7 @@ namespace ManagedPlugin.Source
                 }
 
                 uint tdOffset = ida_get_32bit(bcd + RTTIBaseClassDescriptor.OffsetOfTypeDescriptor());
-                ea_t typeInfo = (colBase64 + (UInt64)tdOffset);
+                EaT typeInfo = (colBase64 + (UInt64)tdOffset);
                 TypeInfo.TryStruct(typeInfo);
 
                 // Get raw type/class name
@@ -1106,7 +1107,7 @@ namespace ManagedPlugin.Source
                 if (!ClassInformer.OptionPlaceStructs && attributes != 0)
                 {
                     // Place attributes comment
-                    ea_t ea = (bcd + RTTIBaseClassDescriptor.OffsetOfAttributes());
+                    EaT ea = (bcd + RTTIBaseClassDescriptor.OffsetOfAttributes());
                     if (!Bytes.HasComment(ea))
                     {
                         string s = string.Empty;
@@ -1224,7 +1225,7 @@ namespace ManagedPlugin.Source
         public static ulong OffsetOfBaseClassArray() { return 4 + 4 + 4; }
         public static uint Size() { return 4 + 4 + 4 + 4; }
 
-        public static bool IsValid(ea_t chd, ea_t colBase64 = 0)
+        public static bool IsValid(EaT chd, EaT colBase64 = 0)
         {
             // TRUE if we've already seen it
             if (ClassInformer.chdSet.Contains(chd))
@@ -1252,11 +1253,11 @@ namespace ManagedPlugin.Source
                                     if (numBaseClasses >= 1)
                                     {
                                         uint baseClassArrayOffset = ida_get_32bit(chd + RTTIClassHierarchyDescriptor.OffsetOfBaseClassArray());
-                                        ea_t baseClassArray = (colBase64 + (UInt64)baseClassArrayOffset);
+                                        EaT baseClassArray = (colBase64 + (UInt64)baseClassArrayOffset);
 
                                         if (ida_is_loaded(baseClassArray))
                                         {
-                                            ea_t baseClassDescriptor = (colBase64 + (UInt64)ida_get_32bit(baseClassArray));
+                                            EaT baseClassDescriptor = (colBase64 + (UInt64)ida_get_32bit(baseClassArray));
                                             return (RTTIBaseClassDescriptor.IsValid(baseClassDescriptor, colBase64));
                                         }
                                     }
@@ -1270,7 +1271,7 @@ namespace ManagedPlugin.Source
             return false;
         }
 
-        public static void TryStruct(ea_t chd, ea_t colBase64)
+        public static void TryStruct(EaT chd, EaT colBase64)
         {
             if (ClassInformer.chdSet.Contains(chd))
             {
@@ -1292,7 +1293,7 @@ namespace ManagedPlugin.Source
                 {
                     if (!ClassInformer.OptionPlaceStructs)
                     {
-                        ea_t ea = (chd + RTTIClassHierarchyDescriptor.OffsetOfAttributes());
+                        EaT ea = (chd + RTTIClassHierarchyDescriptor.OffsetOfAttributes());
                         if (!Bytes.HasComment(ea))
                         {
                             string s = string.Empty;
@@ -1339,12 +1340,12 @@ namespace ManagedPlugin.Source
                 uint numBaseClasses = 0;
                 if (Bytes.GetVerify32((chd + RTTIClassHierarchyDescriptor.OffsetOfNumBaseClasses()), ref numBaseClasses))
                 {
-                    ea_t baseClassArray;
+                    EaT baseClassArray;
 
                     uint baseClassArrayOffset = ida_get_32bit(chd + RTTIClassHierarchyDescriptor.OffsetOfBaseClassArray());
                     baseClassArray = (colBase64 + (UInt64)baseClassArrayOffset);
 
-                    ea_t ea = (chd + RTTIClassHierarchyDescriptor.OffsetOfBaseClassArray());
+                    EaT ea = (chd + RTTIClassHierarchyDescriptor.OffsetOfBaseClassArray());
                     if (!Bytes.HasComment(ea))
                     {
                         string buffer = string.Format($"0x{baseClassArray:X16}");
@@ -1465,7 +1466,7 @@ namespace ManagedPlugin.Source
             return 0x18;
         }
 
-        public static bool IsValid(ea_t col)
+        public static bool IsValid(EaT col)
         {
             if (ida_is_loaded(col))
             {
@@ -1485,12 +1486,12 @@ namespace ManagedPlugin.Source
                                 uint cdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
                                 if (cdOffset != 0)
                                 {
-                                    ea_t colBase = (col - (UInt64)objectLocator);
-                                    ea_t typeInfo = (colBase + (UInt64)tdOffset);
+                                    EaT colBase = (col - (UInt64)objectLocator);
+                                    EaT typeInfo = (colBase + (UInt64)tdOffset);
                                     //PluginBase.WriteDebugMessage($"  test TypeInfo.IsValid(0x{typeInfo:X})");
                                     if (TypeInfo.IsValid(typeInfo))
                                     {
-                                        ea_t classDescriptor = (colBase + (UInt64)cdOffset);
+                                        EaT classDescriptor = (colBase + (UInt64)cdOffset);
                                         //PluginBase.WriteDebugMessage($"  test RTTIClassHierarchyDescriptor.IsValid(0x{col:X}) 0x{typeInfo:X} 0x{classDescriptor:X}");
                                         if (RTTIClassHierarchyDescriptor.IsValid(classDescriptor, colBase))
                                         {
@@ -1510,7 +1511,7 @@ namespace ManagedPlugin.Source
         }
 
         // Same as above but from an already validated typeInfo perspective
-        bool IsValid2(ea_t col)
+        bool IsValid2(EaT col)
         {
             // 'signature' should be zero
             uint signature = 0xffffffff;
@@ -1519,7 +1520,7 @@ namespace ManagedPlugin.Source
                 if (signature == 0)
                 {
                     // Verify CHD
-                    ea_t classDescriptor = Bytes.GetEa(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
+                    EaT classDescriptor = Bytes.GetEa(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
                     if (classDescriptor != 0 && (classDescriptor != DefineConstants.BADADDR))
                         return (RTTIClassHierarchyDescriptor.IsValid(classDescriptor));
 
@@ -1532,23 +1533,23 @@ namespace ManagedPlugin.Source
             return (false);
         }
 
-        public static bool TryStruct(ea_t col)
+        public static bool TryStruct(EaT col)
         {
             if (!Bytes.HasName(col))
             {
-                RTTI.TryStructRTTI(col, (tid_t)TypeIds.s_CompleteObjectLocator_ID);
+                RTTI.TryStructRTTI(col, (TidT)TypeIds.s_CompleteObjectLocator_ID);
 
                 uint tdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfTypeDescriptor());
                 uint cdOffset = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfClassDescriptor());
                 uint objectLocator = ida_get_32bit(col + RTTICompleteObjectLocator.OffsetOfObjectBase());
-                ea_t colBase = (col - (UInt64)objectLocator);
-                ea_t typeInfo = (colBase + (UInt64)tdOffset);
+                EaT colBase = (col - (UInt64)objectLocator);
+                EaT typeInfo = (colBase + (UInt64)tdOffset);
                 TypeInfo.TryStruct(typeInfo);
-                ea_t classDescriptor = (colBase + (UInt64)cdOffset);
+                EaT classDescriptor = (colBase + (UInt64)cdOffset);
                 RTTIClassHierarchyDescriptor.TryStruct(classDescriptor, colBase);
 
                 // Set absolute address comments
-                ea_t ea = (col + RTTICompleteObjectLocator.OffsetOfTypeDescriptor());
+                EaT ea = (col + RTTICompleteObjectLocator.OffsetOfTypeDescriptor());
                 if (!Bytes.HasComment(ea))
                 {
                     string buffer = string.Format($"0x{typeInfo:X16}");

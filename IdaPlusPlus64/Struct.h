@@ -265,7 +265,7 @@ static bool ida_set_struc_cmt(tid_t id, IntPtr cmt, bool repeatable)
 	return set_struc_cmt(id, (char*)(cmt.ToPointer()), repeatable);
 }
 
-static int ida_add_struc_member(IntPtr sptr, IntPtr fieldname, ea_t offset, flags_t flag, IntPtr mt, asize_t nbytes)
+static int ida_add_struc_member(IntPtr sptr, IntPtr fieldname, ea_t offset, flags64_t flag, IntPtr mt, asize_t nbytes)
 {
 	return add_struc_member((::struc_t*)(sptr.ToPointer()), (const char*)(fieldname.ToPointer()), offset, flag, (const ::opinfo_t*)(mt.ToPointer()), nbytes);
 }
