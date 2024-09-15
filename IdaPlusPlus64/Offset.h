@@ -41,7 +41,7 @@ static int ida_get_offset_expression(IntPtr buf, ea_t ea, int n, ea_t from, adif
 		return buffer.size() - 1;
 	}
 
-	ConvertQstringToIntPtr(buffer, buf, buffer.size() - 1);
+	::ConvertQstringToIntPtr(buffer, buf, buffer.size() - 1);
 	return ret;
 }
 
@@ -55,7 +55,7 @@ static int ida_get_offset_expr(IntPtr buf, ea_t ea, int n, IntPtr ri, ea_t from,
 		return buffer.size() - 1;
 	}
 
-	ConvertQstringToIntPtr(buffer, buf, buffer.size() - 1);
+	::ConvertQstringToIntPtr(buffer, buf, buffer.size() - 1);
 	return ret;
 }
 

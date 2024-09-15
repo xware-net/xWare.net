@@ -375,8 +375,8 @@ namespace IdaNet.IdaInterop
         public HiddenRangeT(IntPtr ptr)
         {
             UnmanagedPtr = ptr;
-            base.start_ea = (EaT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
-            base.end_ea = (EaT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08);
+            base.StartEa = (EaT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
+            base.EndEa = (EaT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08);
             description = MarshalingUtils.GetString(UnmanagedPtr, 0x10);
             header = MarshalingUtils.GetString(UnmanagedPtr, 0x18);
             footer = MarshalingUtils.GetString(UnmanagedPtr, 0x20);

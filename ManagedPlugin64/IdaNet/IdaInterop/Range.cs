@@ -16,24 +16,24 @@ namespace IdaNet.IdaInterop
 {
 	public class RangeT : IEquatable<RangeT>
     {
-		public EaT start_ea;
-		public EaT end_ea;
+		public EaT StartEa;
+		public EaT EndEa;
 
 		public RangeT()
 		{
-			this.start_ea = 0;
-			this.end_ea = 0;
+			this.StartEa = 0;
+			this.EndEa = 0;
 		}
 
 		public RangeT(EaT ea1, EaT ea2)
 		{
-			this.start_ea = ea1;
-			this.end_ea = ea2;
+			this.StartEa = ea1;
+			this.EndEa = ea2;
 		}
 
 		public int Compare(in RangeT r)
 		{
-			return start_ea > r.start_ea ? 1 : start_ea < r.start_ea ? -1 : 0;
+			return StartEa > r.StartEa ? 1 : StartEa < r.StartEa ? -1 : 0;
 		}
 
         public static bool operator ==(RangeT ImpliedObject, in RangeT r)
@@ -58,59 +58,59 @@ namespace IdaNet.IdaInterop
 
         public bool Contains(EaT ea)
 		{
-			return start_ea <= ea && end_ea > ea;
+			return StartEa <= ea && EndEa > ea;
 		}
 
 		public bool Contains(in RangeT r)
 		{
-			return r.start_ea >= start_ea && r.end_ea <= end_ea;
+			return r.StartEa >= StartEa && r.EndEa <= EndEa;
 		}
 
 		public bool Overlaps(in RangeT r)
 		{
-			return r.start_ea < end_ea && start_ea < r.end_ea;
+			return r.StartEa < EndEa && StartEa < r.EndEa;
 		}
 
 		public void Clear()
 		{
-			start_ea = end_ea = 0;
+			StartEa = EndEa = 0;
 		}
 
-		public bool Empty()
+		public bool IsEmpty()
 		{
-			return start_ea >= end_ea;
+			return StartEa >= EndEa;
 		}
 
 		public AsizeT Size()
 		{
-			return end_ea - start_ea;
+			return EndEa - StartEa;
 		}
 
 		public void Intersect(in RangeT r)
 		{
-			if (start_ea < r.start_ea)
+			if (StartEa < r.StartEa)
 			{
-				start_ea = r.start_ea;
+				StartEa = r.StartEa;
 			}
-			if (end_ea > r.end_ea)
+			if (EndEa > r.EndEa)
 			{
-				end_ea = r.end_ea;
+				EndEa = r.EndEa;
 			}
-			if (end_ea < start_ea)
+			if (EndEa < StartEa)
 			{
-				end_ea = start_ea;
+				EndEa = StartEa;
 			}
 		}
 
 		public void Extend(EaT ea)
 		{
-			if (start_ea > ea)
+			if (StartEa > ea)
 			{
-				start_ea = ea;
+				StartEa = ea;
 			}
-			if (end_ea < ea)
+			if (EndEa < ea)
 			{
-				end_ea = ea;
+				EndEa = ea;
 			}
 		}
 
@@ -122,15 +122,15 @@ namespace IdaNet.IdaInterop
         public bool Equals(RangeT other)
         {
             return other != null &&
-                   start_ea == other.start_ea &&
-                   end_ea == other.end_ea;
+                   StartEa == other.StartEa &&
+                   EndEa == other.EndEa;
         }
 
         public override int GetHashCode()
         {
             int hashCode = 662085783;
-            hashCode = hashCode * -1521134295 + start_ea.GetHashCode();
-            hashCode = hashCode * -1521134295 + end_ea.GetHashCode();
+            hashCode = hashCode * -1521134295 + StartEa.GetHashCode();
+            hashCode = hashCode * -1521134295 + EndEa.GetHashCode();
             return hashCode;
         }
 
@@ -144,7 +144,7 @@ namespace IdaNet.IdaInterop
 
 		public override string ToString()
 		{
-			return string.Format($"(0x{start_ea:X16} - 0x{end_ea:X16})");
+			return string.Format($"(0x{StartEa:X16} - 0x{EndEa:X16})");
 		}
     }
 

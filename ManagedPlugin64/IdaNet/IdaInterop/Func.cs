@@ -16,6 +16,8 @@ using BgcolorT = System.UInt32;
 using FlagsT = System.UInt32;
 
 using static IdaPlusPlus.IdaInterop;
+using System.Drawing;
+using System.Collections;
 
 namespace IdaNet.IdaInterop
 {
@@ -142,149 +144,73 @@ namespace IdaNet.IdaInterop
 
     public class Func : RangeT
     {
-        public UInt64 flags;
+        public const ulong BADNODE = ulong.MaxValue;     // Placeholder for BADNODE
+        public const uint DefaultColor = 0xFFFFFFFF;     // Placeholder for DEFCOLOR
 
-        UvalT frame;            ///< netnode id of frame structure - see frame.hpp
-        AsizeT frsize;          ///< size of local variables part of frame in bytes.
-                                ///< If #FUNC_FRAME is set and #fpd==0, the frame pointer
-                                ///< (EBP) is assumed to point to the top of the local
-                                ///< variables range.
-        ushort frregs;          ///< size of saved registers in frame. This range is
-                                ///< immediately above the local variables range.
-        AsizeT argsize;         ///< number of bytes purged from the stack
-                                ///< upon returning
-        AsizeT fpd;             ///< frame pointer delta. (usually 0, i.e. realBP==typicalBP)
-                                ///< use update_fpd() to modify it.
+        public UInt64 Flags;
+        public FrameStruct FrameInfo { get; set; }
+        public TailStruct TailInfo { get; set; }
 
-        BgcolorT color;         ///< user defined function color
-
-        // the following fields should not be accessed directly:
-
-        UInt32 pntqty;          ///< number of SP change points
-        //stkpnt_t* points;     ///< array of SP change points.
-        ///< use ...stkpnt...() functions to access this array.
-
-        int regvarqty;          ///< number of register variables (-1-not read in yet)
-                                ///< use find_regvar() to read register variables
-        //regvar_t* regvars;    ///< array of register variables.
-        ///< this array is sorted by: start_ea.
-        ///< use ...regvar...() functions to access this array.
-
-        int llabelqty;          ///< number of local labels
-        //llabel_t* llabels;    ///< local labels.
-        ///< this array shouldn't be accessed directly; name.hpp
-        ///< functions should be used instead.
-
-        int regargqty;          ///< number of register arguments.
-                                ///< During analysis IDA tries to guess the register
-                                ///< arguments. It stores store the guessing outcome
-                                ///< in this field. As soon as it determines the final
-                                ///< function prototype, regargqty is set to zero.
-        //regarg_t* regargs;    ///< unsorted array of register arguments.
-        ///< use ...regarg...() functions to access this array.
-        ///< regargs are destroyed when the full function
-        ///< type is determined.
-
-        int tailqty;            ///< number of function tails
-        //range_t* tails;       ///< array of tails, sorted by ea.
-        ///< use func_tail_iterator_t to access function tails.
-
-        public struct Entry
+        public struct FrameStruct
         {
-            //
-            // Stack frame of the function. It is represented as a structure:
-            //
-            //    +------------------------------------------------+
-            //    | function arguments                             |
-            //    +------------------------------------------------+
-            //    | return address (isn't stored in func_t)        |
-            //    +------------------------------------------------+
-            //    | saved registers (SI, DI, etc - func_t::frregs) |
-            //    +------------------------------------------------+ <- typical BP
-            //    |                                                |  |
-            //    |                                                |  | func_t::fpd
-            //    |                                                |  |
-            //    |                                                | <- real BP
-            //    | local variables (func_t::frsize)               |
-            //    |                                                |
-            //    |                                                |
-            //    +------------------------------------------------+ <- SP
-            //
-            UvalT frame;        ///< netnode id of frame structure - see frame.hpp
-            AsizeT frsize;      ///< size of local variables part of frame in bytes.
-                                ///< If #FUNC_FRAME is set and #fpd==0, the frame pointer
-                                ///< (EBP) is assumed to point to the top of the local
-                                ///< variables range.
-            ushort frregs;       ///< size of saved registers in frame. This range is
-                                 ///< immediately above the local variables range.
-            AsizeT argsize;     ///< number of bytes purged from the stack
-                                ///< upon returning
-            AsizeT fpd;         ///< frame pointer delta. (usually 0, i.e. realBP==typicalBP)
-                                ///< use update_fpd() to modify it.
+            public UvalT Frame;        // netnode id of frame structure
+            public AsizeT FrSize;       // size of local variables part of frame in bytes
+            public ushort FrRegs;      // size of saved registers in frame
+            public AsizeT ArgSize;      // number of bytes purged from the stack
+            public AsizeT Fpd;          // frame pointer delta
+            public BgcolorT Color;         // user-defined function color
 
-            BgcolorT color;     ///< user defined function color
-
-            // the following fields should not be accessed directly:
-
-            UInt32 pntqty;       ///< number of SP change points
-            //stkpnt_t* points;  ///< array of SP change points.
-            ///< use ...stkpnt...() functions to access this array.
-
-            int regvarqty;       ///< number of register variables (-1-not read in yet)
-                                 ///< use find_regvar() to read register variables
-            //regvar_t* regvars; ///< array of register variables.
-            ///< this array is sorted by: start_ea.
-            ///< use ...regvar...() functions to access this array.
-
-            int llabelqty;       ///< number of local labels
-            //llabel_t* llabels; ///< local labels.
-            ///< this array shouldn't be accessed directly; name.hpp
-            ///< functions should be used instead.
-
-            int regargqty;       ///< number of register arguments.
-                                 ///< During analysis IDA tries to guess the register
-                                 ///< arguments. It stores store the guessing outcome
-                                 ///< in this field. As soon as it determines the final
-                                 ///< function prototype, regargqty is set to zero.
-            //regarg_t* regargs; ///< unsorted array of register arguments.
-            ///< use ...regarg...() functions to access this array.
-            ///< regargs are destroyed when the full function
-            ///< type is determined.
-
-            int tailqty;         ///< number of function tails
-            //range_t* tails;    ///< array of tails, sorted by ea.
-            ///< use func_tail_iterator_t to access function tails.
+            public UInt32 PntQty;        // number of SP change points
+            public IntPtr Points;      // array of SP change points
+            public int RegVarQty;      // number of register variables
+            public IntPtr RegVars;     // array of register variables
+            public int LLabelQty;      // number of local labels
+            public IntPtr LLabels;     // array of local labels
+            public int RegArgQty;      // number of register arguments
+            public IntPtr RegArgs;     // array of register arguments
+            public int TailQty;        // number of function tails
+            public IntPtr Tails;       // array of tails
         };
 
-        public struct Tail
+        public struct TailStruct
         {
-            public EaT owner;          ///< the address of the main function possessing this tail
-            public int refqty;          ///< number of referers
-            //ea_t* referers;    ///< array of referers (function start addresses).
+            public EaT Owner;           // the address of the main function possessing this tail
+            public int RefQty;          // number of referers
+            public IntPtr Referers;     // array of referers (function start addresses)
         };
 
         public Func(EaT start = 0, EaT end = 0, FlagsT f = 0)
         {
-            start_ea = start;
-            end_ea = end;
-            flags = f | (uint)FunctionFlags.FUNC_NORET_PENDING;
-            //frame = BADNODE;
-            frsize = 0;
-            frregs = 0;
-            argsize = 0;
-            fpd = 0;
-            color = 0xffffffff;
-            pntqty = 0;
-            // points = null;
-            regvarqty = 0;
-            // regvars = null;
-            llabelqty = 0;
-            // llabels = null;
-            regargqty = 0;
-            // regargs = null
-            tailqty = 0;
-            // tails = null;
+            StartEa = start;
+            EndEa = end;
+            Flags = f | (uint)FunctionFlags.FUNC_NORET_PENDING;
 
+            FrameInfo = new FrameStruct
+            {
+                Frame = BADNODE,
+                FrSize = 0,
+                FrRegs = 0,
+                ArgSize = 0,
+                Fpd = 0,
+                Color = DefaultColor,
+                PntQty = 0,
+                Points = IntPtr.Zero,
+                RegVarQty = 0,
+                RegVars = IntPtr.Zero,
+                LLabelQty = 0,
+                LLabels = IntPtr.Zero,
+                RegArgQty = 0,
+                RegArgs = IntPtr.Zero,
+                TailQty = 0,
+                Tails = IntPtr.Zero
+            };
+
+            TailInfo = new TailStruct
+            {
+                Owner = start,
+                RefQty = 0,
+                Referers = IntPtr.Zero
+            };
         }
 
         public Func(IntPtr funcPtr)
@@ -292,26 +218,35 @@ namespace IdaNet.IdaInterop
             UnmanagedPtr = funcPtr;
             IntPtr nativeBuffer = IntPtr.Zero;
 
-            start_ea = ida_get_func_start_ea(funcPtr);
-            end_ea = ida_get_func_end_ea(funcPtr);
-            flags = ida_get_func_flags(funcPtr);
-            frame = MarshalingUtils.GetUInt64(funcPtr, 0x18);
-            //owner = MarshalingUtils.GetEffectiveAddress(funcPtr, 0x20);
-            //frsize = ;
-            //frregs = ;
-            //argsize = ;
-            //fpd = ;
-            //color = ;
-            //pntqty = ;
-            // points = ;
-            //regvarqty = ;
-            // regvars = ;
-            //llabelqty = ;
-            // llabels = ;
-            //regargqty = ;
-            // regargs = ;
-            //tailqty = ;
-            // tails = ;
+            StartEa = ida_get_func_start_ea(funcPtr);
+            EndEa = ida_get_func_end_ea(funcPtr);
+            Flags = ida_get_func_flags(funcPtr);
+            FrameInfo = new FrameStruct
+            {
+                Frame = MarshalingUtils.GetUInt64(funcPtr, 0x18),
+                FrSize = 0,
+                FrRegs = 0,
+                ArgSize = 0,
+                Fpd = 0,
+                Color = DefaultColor,
+                PntQty = 0,
+                Points = IntPtr.Zero,
+                RegVarQty = 0,
+                RegVars = IntPtr.Zero,
+                LLabelQty = 0,
+                LLabels = IntPtr.Zero,
+                RegArgQty = 0,
+                RegArgs = IntPtr.Zero,
+                TailQty = 0,
+                Tails = IntPtr.Zero
+            };
+
+            TailInfo = new TailStruct
+            {
+                Owner = MarshalingUtils.GetEffectiveAddress(funcPtr, 0x20),
+                RefQty = 0,
+                Referers = IntPtr.Zero
+            };
         }
 
         public IntPtr UnmanagedPtr { get; set; }
@@ -321,24 +256,24 @@ namespace IdaNet.IdaInterop
             return ida_get_func_size(UnmanagedPtr);
         }
 
-        public bool is_far()
+        public bool IsFar()
         {
-            return (flags & (UInt64)FunctionFlags.FUNC_FAR) != 0;
+            return (Flags & (UInt64)FunctionFlags.FUNC_FAR) != 0;
         }
 
-        public bool does_return()
+        public bool DoesReturn()
         {
-            return (flags & (UInt64)FunctionFlags.FUNC_NORET) == 0;
+            return (Flags & (UInt64)FunctionFlags.FUNC_NORET) == 0;
         }
 
-        public bool analyzed_sp()
+        public bool AnalyzedSp()
         {
-            return (flags & (UInt64)FunctionFlags.FUNC_SP_READY) != 0;
+            return (Flags & (UInt64)FunctionFlags.FUNC_SP_READY) != 0;
         }
 
-        public bool need_prolog_analysis()
+        public bool NeedPrologAnalysis()
         {
-            return (flags & (UInt64)FunctionFlags.FUNC_PROLOG_OK) == 0;
+            return (Flags & (UInt64)FunctionFlags.FUNC_PROLOG_OK) == 0;
         }
 
         //public static void AddFunc(ea_t ea1, ea_t ea2 = 0xffffffffffffffff)
@@ -356,6 +291,47 @@ namespace IdaNet.IdaInterop
         //    f.start_ea = IdaPlusPlus.IdaInterop.ida_get_func_start_ea(ptr);
         //    return f;
         //}
+    }
+
+    public class LockFunc : IDisposable
+    {
+        private IntPtr pfn; // Pointer to func_t
+
+        // Constructor
+        public LockFunc(IntPtr _pfn)
+        {
+            pfn = _pfn;
+            LockFuncRange(pfn, true);
+        }
+
+        // Destructor (called when the object is garbage collected or disposed)
+        ~LockFunc()
+        {
+            Dispose(false);
+        }
+
+        // Dispose method to support explicit disposal (e.g. using block)
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Helper method for resource cleanup
+        protected virtual void Dispose(bool disposing)
+        {
+            if (pfn != IntPtr.Zero)
+            {
+                LockFuncRange(pfn, false);
+                pfn = IntPtr.Zero;
+            }
+        }
+
+        // Placeholder for lock_func_range function
+        private void LockFuncRange(IntPtr func, bool lockRange)
+        {
+            // Implement the locking mechanism based on your requirements
+        }
     }
 
     public class FuncParentIteratorT
@@ -479,5 +455,361 @@ namespace IdaNet.IdaInterop
             // Replace this mock function with actual code.
             return 0xDEADBEEF; // Placeholder value
         }
+    }
+
+    public class FuncTailIteratorT : IDisposable
+    {
+        private IntPtr pfn; // Pointer to func_t
+        private int idx;
+        private RangeT seglim; // valid and used only if pfn == IntPtr.Zero
+
+        // Constructor
+        public FuncTailIteratorT()
+        {
+            pfn = IntPtr.Zero;
+            idx = -1;
+        }
+
+        // Overloaded Constructor
+        public FuncTailIteratorT(IntPtr _pfn, ulong ea = BADADDR)
+        {
+            pfn = IntPtr.Zero;
+            Set(_pfn, ea);
+        }
+
+        // Destructor
+        ~FuncTailIteratorT()
+        {
+            Dispose(false);
+        }
+
+        // Dispose method for manual resource management
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Dispose pattern helper
+        protected virtual void Dispose(bool disposing)
+        {
+            if (pfn != IntPtr.Zero)
+            {
+                LockFuncRange(pfn, false);
+                pfn = IntPtr.Zero;
+            }
+        }
+
+        // Set function
+        public bool Set(IntPtr _pfn, ulong ea = BADADDR)
+        {
+            return FuncTailIteratorSet(this, _pfn, ea);
+        }
+
+        // Set EA (effective address)
+        public bool SetEa(ulong ea)
+        {
+            return FuncTailIteratorSetEa(this, ea);
+        }
+
+        // Set an arbitrary range
+        public bool SetRange(ulong ea1, ulong ea2)
+        {
+            Dispose();
+            pfn = IntPtr.Zero;
+            idx = -1;
+            seglim = new RangeT(ea1, ea2);
+            return !seglim.IsEmpty();
+        }
+
+        // Return the current chunk (range)
+        public RangeT Chunk
+        {
+            get
+            {
+                if (pfn == IntPtr.Zero)
+                    return seglim;
+
+                return (idx >= 0 && idx < GetTailQty()) ? GetTail(idx) : GetRange(pfn);
+            }
+        }
+
+        // Methods for navigating chunks
+        public bool First()
+        {
+            if (pfn != IntPtr.Zero)
+            {
+                idx = 0;
+                return GetTailQty() > 0;
+            }
+            return false;
+        }
+
+        public bool Last()
+        {
+            if (pfn != IntPtr.Zero)
+            {
+                idx = GetTailQty() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Next()
+        {
+            if (pfn != IntPtr.Zero && idx + 1 < GetTailQty())
+            {
+                idx++;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Prev()
+        {
+            if (idx >= 0)
+            {
+                idx--;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Main()
+        {
+            idx = -1;
+            return pfn != IntPtr.Zero;
+        }
+
+        // Placeholder for tail quantity retrieval (assumes func_t has this information)
+        private int GetTailQty()
+        {
+            // Implementation to retrieve tail quantity from pfn
+            return 0; // Replace with actual implementation
+        }
+
+        // Placeholder for retrieving a tail at a given index
+        private RangeT GetTail(int index)
+        {
+            // Implementation to retrieve tail from pfn
+            return new RangeT(); // Replace with actual implementation
+        }
+
+        // Placeholder for range_t equivalent in func_t
+        private RangeT GetRange(IntPtr func)
+        {
+            // Implementation to retrieve range from pfn
+            return new RangeT(); // Replace with actual implementation
+        }
+
+        // Placeholder for lock_func_range
+        private void LockFuncRange(IntPtr func, bool lockRange)
+        {
+            // Implement the locking mechanism
+        }
+
+        // Placeholder for external functions
+        private bool FuncTailIteratorSet(FuncTailIteratorT iterator, IntPtr _pfn, ulong ea)
+        {
+            // Implement logic for setting func_t and ea
+            return true; // Replace with actual implementation
+        }
+
+        private bool FuncTailIteratorSetEa(FuncTailIteratorT iterator, ulong ea)
+        {
+            // Implement logic for setting ea
+            return true; // Replace with actual implementation
+        }
+
+        // Constants
+        private const ulong BADADDR = 0xFFFFFFFFFFFFFFFF;
+    }
+
+    public class FuncItemIteratorT
+    {
+        private FuncTailIteratorT fti;
+        private ulong ea;
+
+        public FuncItemIteratorT()
+        {
+            ea = BADADDR;
+        }
+
+        public FuncItemIteratorT(IntPtr pfn, ulong _ea = BADADDR)
+        {
+            Set(pfn, _ea);
+        }
+
+        /// Set a function range. If pfn == null then a segment range will be set.
+        public bool Set(IntPtr pfn, ulong _ea = BADADDR)
+        {
+            ea = (_ea != BADADDR || pfn == IntPtr.Zero) ? _ea : GetStartEA(pfn);
+            return fti.Set(pfn, _ea);
+        }
+
+        /// Set an arbitrary range
+        public bool SetRange(ulong ea1, ulong ea2)
+        {
+            ea = ea1;
+            return fti.SetRange(ea1, ea2);
+        }
+
+        public bool First()
+        {
+            if (!fti.Main())
+                return false;
+
+            ea = fti.Chunk.StartEa;
+            return true;
+        }
+
+        public bool Last()
+        {
+            if (!fti.Last())
+                return false;
+
+            ea = fti.Chunk.EndEa;
+            return true;
+        }
+
+        public ulong Current()
+        {
+            return ea;
+        }
+
+        public RangeT Chunk()
+        {
+            return fti.Chunk;
+        }
+
+        public bool Next(TestfDelegate func, IntPtr ud)
+        {
+            return FuncItemIteratorNext(this, func, ud);
+        }
+
+        public bool Prev(TestfDelegate func, IntPtr ud)
+        {
+            return FuncItemIteratorPrev(this, func, ud);
+        }
+
+        public bool NextAddr()
+        {
+            return Next(FAny, IntPtr.Zero);
+        }
+
+        public bool NextHead()
+        {
+            return Next(FIsHead, IntPtr.Zero);
+        }
+
+        public bool NextCode()
+        {
+            return Next(FIsCode, IntPtr.Zero);
+        }
+
+        public bool NextData()
+        {
+            return Next(FIsData, IntPtr.Zero);
+        }
+
+        public bool NextNotTail()
+        {
+            return Next(FIsNotTail, IntPtr.Zero);
+        }
+
+        public bool PrevAddr()
+        {
+            return Prev(FAny, IntPtr.Zero);
+        }
+
+        public bool PrevHead()
+        {
+            return Prev(FIsHead, IntPtr.Zero);
+        }
+
+        public bool PrevCode()
+        {
+            return Prev(FIsCode, IntPtr.Zero);
+        }
+
+        public bool PrevData()
+        {
+            return Prev(FIsData, IntPtr.Zero);
+        }
+
+        public bool PrevNotTail()
+        {
+            return Prev(FIsNotTail, IntPtr.Zero);
+        }
+
+        public bool DecodePrevInsn(IntPtr outInsn)
+        {
+            return FuncItemIteratorDecodePrevInsn(this, outInsn);
+        }
+
+        public bool DecodePrecedingInsn(IntPtr visited, IntPtr pFarRef, IntPtr outInsn)
+        {
+            return FuncItemIteratorDecodePrecedingInsn(this, visited, pFarRef, outInsn);
+        }
+
+        public bool Succ(TestfDelegate func, IntPtr ud)
+        {
+            return FuncItemIteratorSucc(this, func, ud);
+        }
+
+        public bool SuccCode()
+        {
+            return Succ(FIsCode, IntPtr.Zero);
+        }
+
+        // Delegate type for test functions
+        public delegate bool TestfDelegate(IntPtr func, IntPtr ud);
+
+        // Placeholder for external functions
+        private bool FuncItemIteratorNext(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        {
+            // Implement logic to handle "next" iteration
+            return true; // Replace with actual implementation
+        }
+
+        private bool FuncItemIteratorPrev(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        {
+            // Implement logic to handle "prev" iteration
+            return true; // Replace with actual implementation
+        }
+
+        private bool FuncItemIteratorDecodePrevInsn(FuncItemIteratorT iterator, IntPtr outInsn)
+        {
+            // Implement logic for decoding previous instruction
+            return true; // Replace with actual implementation
+        }
+
+        private bool FuncItemIteratorDecodePrecedingInsn(FuncItemIteratorT iterator, IntPtr visited, IntPtr pFarRef, IntPtr outInsn)
+        {
+            // Implement logic for decoding preceding instruction
+            return true; // Replace with actual implementation
+        }
+
+        private bool FuncItemIteratorSucc(FuncItemIteratorT iterator, TestfDelegate func, IntPtr ud)
+        {
+            // Implement logic for successive iteration
+            return true; // Replace with actual implementation
+        }
+
+        private EaT GetStartEA(IntPtr pfn)
+        {
+            // Implement logic to retrieve start_ea from func_t
+            return 0; // Replace with actual implementation
+        }
+
+        // Delegate stubs for test functions
+        private bool FAny(IntPtr func, IntPtr ud) { return true; }
+        private bool FIsHead(IntPtr func, IntPtr ud) { return true; }
+        private bool FIsCode(IntPtr func, IntPtr ud) { return true; }
+        private bool FIsData(IntPtr func, IntPtr ud) { return true; }
+        private bool FIsNotTail(IntPtr func, IntPtr ud) { return true; }
+
+        // Constants
+        private const ulong BADADDR = 0xFFFFFFFFFFFFFFFF;
     }
 }

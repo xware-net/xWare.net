@@ -110,8 +110,8 @@ namespace IdaNet.IdaInterop
                     }
                 }
 
-                result.start_ea = ida_get_segm_start_ea(index);
-                result.end_ea = ida_get_segm_end_ea(index);
+                result.StartEa = ida_get_segm_start_ea(index);
+                result.EndEa = ida_get_segm_end_ea(index);
                 result.align = (SegmentAlignement)ida_get_segm_align(index);
                 result.comb = (SegmentCombination)ida_get_segm_comb(index);
                 result.perm = (SegmentPermission)ida_get_segm_perm(index);

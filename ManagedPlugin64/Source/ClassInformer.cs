@@ -288,7 +288,7 @@ namespace ManagedPlugin.Source
                     if (func != IntPtr.Zero)
                     {
                         string str = string.Empty;
-                        var requiredSize = ida_get_long_name(IntPtr.Zero, function.start_ea, 0);
+                        var requiredSize = ida_get_long_name(IntPtr.Zero, function.StartEa, 0);
                         if (-1 == requiredSize)
                         {
                             str = string.Empty;
@@ -296,7 +296,7 @@ namespace ManagedPlugin.Source
                         else
                         {
                             IntPtr nativeBuffer = Marshal.AllocCoTaskMem((int)requiredSize);
-                            requiredSize = ida_get_long_name(nativeBuffer, function.start_ea, 0);
+                            requiredSize = ida_get_long_name(nativeBuffer, function.StartEa, 0);
                             if (0 <= requiredSize)
                             {
                                 str = Marshal.PtrToStringAnsi(nativeBuffer, (int)requiredSize);
@@ -317,7 +317,7 @@ namespace ManagedPlugin.Source
                                     // Skip stub functions
                                     if (function.size() > 16)
                                     {
-                                        Kernwin.ida_msg($"{function.start_ea:X16} C: \"{name}\", {function.size()} bytes.\n");
+                                        Kernwin.ida_msg($"{function.StartEa:X16} C: \"{name}\", {function.size()} bytes.\n");
                                         if (cinitFunc != IntPtr.Zero)
                                             Debugger.Break();
                                         cinitFunc = func;
@@ -328,15 +328,15 @@ namespace ManagedPlugin.Source
                                 {
                                     if ((len >= "_initterm".Length) && (name.EndsWith("_initterm")))
                                     {
-                                        Kernwin.ida_msg($"{function.start_ea:X16} I: \"{name}\", {function.size()} bytes.\n");
-                                        inittermMap[function.start_ea] = name;
+                                        Kernwin.ida_msg($"{function.StartEa:X16} I: \"{name}\", {function.size()} bytes.\n");
+                                        inittermMap[function.StartEa] = name;
                                     }
                                     else
                                     {
                                         if ((len >= "_initterm_e".Length) && (name.EndsWith("_initterm_e")))
                                         {
-                                            Kernwin.ida_msg($"{function.start_ea:X16} E: \"{name}\", {function.size()} bytes.\n");
-                                            inittermMap[function.start_ea] = name;
+                                            Kernwin.ida_msg($"{function.StartEa:X16} E: \"{name}\", {function.size()} bytes.\n");
+                                            inittermMap[function.StartEa] = name;
                                         }
                                     }
                                 }
@@ -381,14 +381,14 @@ namespace ManagedPlugin.Source
 
                     for (int i = 0; i < (pat.Length); i++)
                     {
-                        ea_t match = find_binary2(cinitFunction.start_ea, cinitFunction.end_ea, pat[i].pattern);
+                        ea_t match = find_binary2(cinitFunction.StartEa, cinitFunction.EndEa, pat[i].pattern);
                         while (match != DefineConstants.BADADDR)
                         {
                             Kernwin.ida_msg($"   {match:X16}  Register _initterm(), pattern #{i}.\n");
                             ea_t start = Bytes.GetEa(match + pat[i].start);
                             ea_t end = Bytes.GetEa(match + pat[i].end);
                             ProcessRegisterInitterm(start, end, (match + pat[i].call));
-                            match = find_binary2(match + 30, cinitFunction.end_ea, pat[i].pattern);
+                            match = find_binary2(match + 30, cinitFunction.EndEa, pat[i].pattern);
                         };
                     }
                 }
@@ -483,7 +483,7 @@ namespace ManagedPlugin.Source
                     //if (func != null)
                     //{
                     string str = string.Empty;
-                    var requiredSize = ida_get_long_name(IntPtr.Zero, func.start_ea, 0);
+                    var requiredSize = ida_get_long_name(IntPtr.Zero, func.StartEa, 0);
                     if (-1 == requiredSize)
                     {
                         str = string.Empty;
@@ -491,7 +491,7 @@ namespace ManagedPlugin.Source
                     else
                     {
                         IntPtr nativeBuffer = Marshal.AllocCoTaskMem((int)requiredSize);
-                        requiredSize = ida_get_long_name(nativeBuffer, func.start_ea, 0);
+                        requiredSize = ida_get_long_name(nativeBuffer, func.StartEa, 0);
                         if (0 <= requiredSize)
                         {
                             str = Marshal.PtrToStringAnsi(nativeBuffer, (int)requiredSize);
@@ -819,7 +819,7 @@ namespace ManagedPlugin.Source
                         // Bail instructions are past the function start now
                         IntPtr function = ida_get_func(xref);
                         Func func = new Func(function);
-                        if (instruction2 < func.start_ea)
+                        if (instruction2 < func.StartEa)
                         {
                             //msg("   " EAFORMAT " arg2 outside of contained function **\n", func->start_ea);
                             break;
@@ -1145,14 +1145,14 @@ namespace ManagedPlugin.Source
 
         private static void ScanSeg4Cols(SegmentT segment)
         {
-            PluginBase.WriteDebugMessage($" N: \"{segment.name}\", A: {segment.start_ea:X16} - {segment.end_ea:X16}, S: {byteSizeString(segment.Size())} for COLS\n");
+            PluginBase.WriteDebugMessage($" N: \"{segment.name}\", A: {segment.StartEa:X16} - {segment.EndEa:X16}, S: {byteSizeString(segment.Size())} for COLS\n");
             // read segment in memory
             byte[] bytes = new byte[segment.Size()];
             GCHandle pinnedArray = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             IntPtr pointer = pinnedArray.AddrOfPinnedObject();
 
-            ida_get_bytes(pointer, bytes.Length, segment.end_ea, (int)GMB.GMB_READALL, IntPtr.Zero);
-            using (Stream stream = System.IO.File.Open(segment.start_ea.ToString("X") + segment.name, FileMode.Create))
+            ida_get_bytes(pointer, bytes.Length, segment.EndEa, (int)GMB.GMB_READALL, IntPtr.Zero);
+            using (Stream stream = System.IO.File.Open(segment.StartEa.ToString("X") + segment.name, FileMode.Create))
             {
                 using (BinaryWriter bw = new BinaryWriter(stream))
                 {
@@ -1163,8 +1163,8 @@ namespace ManagedPlugin.Source
             pinnedArray.Free();
             if (segment.Size() >= RTTICompleteObjectLocator.Size())
             {
-                ea_t startEA = (segment.start_ea + sizeof(uint)) & ~(ea_t)(sizeof(uint) - 1);
-                ea_t endEA = segment.end_ea - RTTICompleteObjectLocator.Size();
+                ea_t startEA = (segment.StartEa + sizeof(uint)) & ~(ea_t)(sizeof(uint) - 1);
+                ea_t endEA = segment.EndEa - RTTICompleteObjectLocator.Size();
 
                 for (ea_t ptr = startEA; ptr < endEA;)
                 {
@@ -1244,13 +1244,13 @@ namespace ManagedPlugin.Source
         // Locate vftables
         private static bool scanSeg4Vftables(SegmentT seg, ref Dictionary<ea_t, uint> colMap)
         {
-            PluginBase.WriteDebugMessage($" N: \"{seg.name}\", A: {seg.start_ea:X16} - {seg.end_ea:X16}, S: {byteSizeString(seg.Size())}\n");
+            PluginBase.WriteDebugMessage($" N: \"{seg.name}\", A: {seg.StartEa:X16} - {seg.EndEa:X16}, S: {byteSizeString(seg.Size())}\n");
 
             uint foundCount = 0;
             if (seg.Size() >= GetPtrSize())
             {
-                ea_t startEA = (seg.start_ea + GetPtrSize()) & ~(ea_t)(GetPtrSize() - 1);
-                ea_t endEA = seg.end_ea - GetPtrSize();
+                ea_t startEA = (seg.StartEa + GetPtrSize()) & ~(ea_t)(GetPtrSize() - 1);
+                ea_t endEA = seg.EndEa - GetPtrSize();
                 if (((startEA | endEA) & 3) != 0)
                     Debugger.Break();
 

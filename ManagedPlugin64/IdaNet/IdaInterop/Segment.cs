@@ -206,8 +206,8 @@ namespace IdaNet.IdaInterop
                 }
             }
 
-            start_ea = ida_get_segm_start_ea(UnmanagedPtr);
-            end_ea = ida_get_segm_end_ea(UnmanagedPtr);
+            StartEa = ida_get_segm_start_ea(UnmanagedPtr);
+            EndEa = ida_get_segm_end_ea(UnmanagedPtr);
             orgbase = ida_get_segm_orgbase(UnmanagedPtr);
             align = (SegmentAlignement)ida_get_segm_align(UnmanagedPtr);
             comb = (SegmentCombination)ida_get_segm_comb(UnmanagedPtr);
@@ -338,8 +338,8 @@ namespace IdaNet.IdaInterop
             sb.Append($"Segment ");
             sb.Append($"name=\"{name}\", ");
             sb.Append($"sclass={sclass}, ");
-            sb.Append($"start_ea=0x{start_ea:X16}, ");
-            sb.Append($"end_ea=0x{end_ea:X16}, ");
+            sb.Append($"start_ea=0x{StartEa:X16}, ");
+            sb.Append($"end_ea=0x{EndEa:X16}, ");
             sb.Append($"align={align}, ");
             sb.Append($"comb={comb}, ");
             sb.Append($"perm=({perm}), ");

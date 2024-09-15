@@ -337,8 +337,8 @@ namespace IdaNet.IdaInterop
             idaInfo.highoff = ida_inf_get_highoff();
             idaInfo.maxref = ida_inf_get_maxref();
             idaInfo.privrange = new RangeT();
-            idaInfo.privrange.start_ea = ida_inf_get_privrange_start_ea();
-            idaInfo.privrange.end_ea = ida_inf_get_privrange_end_ea();
+            idaInfo.privrange.StartEa = ida_inf_get_privrange_start_ea();
+            idaInfo.privrange.EndEa = ida_inf_get_privrange_end_ea();
             idaInfo.netdelta = ida_inf_get_netdelta();
             idaInfo.xrefnum = ida_inf_get_xrefnum();
             idaInfo.type_xrefnum = ida_inf_get_type_xrefnum();
