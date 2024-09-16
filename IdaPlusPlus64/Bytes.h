@@ -1,5 +1,8 @@
 #pragma once
 
+[::System::Runtime::InteropServices::UnmanagedFunctionPointer(::System::Runtime::InteropServices::CallingConvention::Cdecl)]
+delegate int Func_int_UInt64_long_UInt64_UInt64___IntPtr(unsigned long long ea, long long fpos, unsigned long long o, unsigned long long v, ::System::IntPtr ud);
+
 #define MS_CLS  0x00000600LU             ///< Mask for typing
 #define FF_CODE 0x00000600LU             ///< Code ?
 #define FF_DATA 0x00000400LU             ///< Data ?
@@ -127,21 +130,6 @@ static size_t ida_get_ida_string(IntPtr buffer, ea_t ea)
 	}
 }
 
-//static bool ida_has_name(flags64_t F)
-//{
-//	return has_name(F);
-//}
-
-//static bool ida_has_cmt(flags64_t F)
-//{
-//	return has_cmt(F);
-//}
-
-static bool ida_set_cmt(ea_t ea, IntPtr comment, bool rptble)
-{
-	return set_cmt(ea, (char*)comment.ToPointer(), rptble);
-}
-
 static bool ida_create_dword(ea_t ea, bool force)
 {
 	return create_dword(ea, sizeof(DWORD), force);
@@ -156,8 +144,6 @@ static bool ida_del_items(ea_t ea, int flags, asize_t nbytes)
 {
 	return del_items(ea, flags, nbytes, nullptr);
 }
-
-// generated
 
 static error_t ida_enable_flags(ea_t start_ea, ea_t end_ea, storage_type_t stt)
 {
@@ -204,22 +190,19 @@ static asize_t ida_chunk_size(ea_t ea)
 	return chunk_size(ea);
 }
 
-//idaman ea_t ida_export next_that(
-//	ea_t ea,
-//	ea_t maxea,
-//	testf_t* testf,
-//	void* ud = nullptr);
-//
-//idaman ea_t ida_export prev_that(
-//	ea_t ea,
-//	ea_t minea,
-//	testf_t* testf,
-//	void* ud = nullptr);
-
+static ea_t ida_next_that(ea_t ea, ea_t maxea, IntPtr testf, IntPtr ud)
+{
+	return next_that(ea, maxea, (testf_t*)(testf.ToPointer()), (void*)(ud.ToPointer()));
+}
 
 static ea_t ida_next_unknown(ea_t ea, ea_t maxea)
 {
 	return next_that(ea, maxea, nullptr);
+}
+
+static ea_t ida_prev_that(ea_t ea, ea_t minea, IntPtr testf, IntPtr ud)
+{
+	return prev_that(ea, minea, (testf_t*)(testf.ToPointer()), (void*)(ud.ToPointer()));
 }
 
 static ea_t ida_prev_unknown(ea_t ea, ea_t minea)
@@ -367,7 +350,10 @@ static uint64 ida_get_wide_dword(ea_t ea)
 	return get_wide_dword(ea);
 }
 
-//uchar ida_export get_octet(ea_t *ea, uint64 *v, int *nbit)
+static bool ida_get_octet2(IntPtr out, IntPtr ogen)
+{
+	return get_octet2((uchar*)(out.ToPointer()), (octet_generator_t*)(ogen.ToPointer()));
+}
 
 static uint32 ida_get_16bit(ea_t ea)
 {
@@ -384,13 +370,15 @@ static uint64 ida_get_64bit(ea_t ea)
 	return get_64bit(ea);
 }
 
-//bool ida_export get_data_value(uval_t *v, ea_t ea, asize_t size)
+static bool ida_get_data_value(IntPtr v, ea_t ea, asize_t size)
+{
+	return get_data_value((uval_t*)(v.ToPointer()), ea, size);
+}
 
-//int ida_export visit_patched_bytes(
-//	ea_t ea1,
-//	ea_t ea2,
-//	int (idaapi* cb)(ea_t ea, qoff64_t fpos, uint64 o, uint64 v, void* ud),
-//	void* ud = nullptr)
+static int ida_visit_patched_bytes(ea_t ea1, ea_t ea2, Func_int_UInt64_long_UInt64_UInt64___IntPtr^ cb, IntPtr ud)
+{
+	return visit_patched_bytes(ea1, ea2, static_cast<int (*)(ea_t, int64, uint64, uint64, void*)>(::System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(cb).ToPointer()), (void*)(ud.ToPointer()));
+}
 
 static uint64 ida_get_original_byte(ea_t ea)
 {
@@ -477,7 +465,10 @@ static void ida_add_qword(ea_t ea, uint64 value)
 	return add_qword(ea, value);
 }
 
-// bool ida_export get_zero_ranges(rangeset_t *zranges, const range_t *range)
+static bool ida_get_zero_ranges(IntPtr zranges, IntPtr range)
+{
+	return get_zero_ranges((rangeset_t*)(zranges.ToPointer()), (const range_t*)(range.ToPointer()));
+}
 
 static ssize_t ida_get_bytes(IntPtr buffer, ssize_t size, ea_t ea, int gmb_flafs, IntPtr mask)
 {
@@ -496,14 +487,14 @@ static void ida_patch_bytes(ea_t ea, IntPtr ptr, size_t size)
 	patch_bytes(ea, buf, size);
 }
 
-static bool ida_is_code(flags64_t F) 
-{ 
-	return (F & MS_CLS) == FF_CODE; 
+static bool ida_is_code(flags64_t F)
+{
+	return (F & MS_CLS) == FF_CODE;
 }
 
-static bool ida_f_is_code(flags64_t F, IntPtr ptr) 
-{ 
-	return is_code(F); 
+static bool ida_f_is_code(flags64_t F, IntPtr ptr)
+{
+	return is_code(F);
 }
 
 static bool ida_is_data(flags64_t F)
@@ -517,55 +508,65 @@ static bool ida_f_is_data(flags64_t F, IntPtr ptr)
 }
 
 static bool ida_is_tail(flags64_t F)
-{ 
-	return (F & MS_CLS) == FF_TAIL; 
+{
+	return (F & MS_CLS) == FF_TAIL;
 }
 
-static bool ida_f_is_tail(flags64_t F, IntPtr ptr) 
-{ 
-	return is_tail(F); 
+static bool ida_f_is_tail(flags64_t F, IntPtr ptr)
+{
+	return is_tail(F);
 }
 
-static bool ida_is_not_tail(flags64_t F) 
-{ 
-	return !is_tail(F); 
+static bool ida_is_not_tail(flags64_t F)
+{
+	return !is_tail(F);
 }
 
-static bool ida_f_is_not_tail(flags64_t F,IntPtr ptr) 
-{ 
-	return is_not_tail(F); 
+static bool ida_f_is_not_tail(flags64_t F, IntPtr ptr)
+{
+	return is_not_tail(F);
 }
 
-static bool ida_is_unknown(flags64_t F) 
-{ 
-	return (F & MS_CLS) == FF_UNK; 
+static bool ida_is_unknown(flags64_t F)
+{
+	return (F & MS_CLS) == FF_UNK;
 }
 
-static bool ida_is_head(flags64_t F) 
-{ 
-	return (F & FF_DATA) != 0; 
+static bool ida_is_head(flags64_t F)
+{
+	return (F & FF_DATA) != 0;
 }
 
-static bool ida_f_is_head(flags64_t F, IntPtr ptr) 
-{ 
-	return is_head(F); 
+static bool ida_f_is_head(flags64_t F, IntPtr ptr)
+{
+	return is_head(F);
 }
 
-// typedef bool idaapi may_destroy_cb_t(ea_t)
-//bool ida_export del_items(
-//	ea_t ea,
-//	int flags = 0,
-//	asize_t nbytes = 1,
-//	may_destroy_cb_t* may_destroy = nullptr)
+static bool ida_del_items(ea_t ea, int flags, asize_t nbytes, System::Func<bool, unsigned long long>^ may_destroy)
+{
+	return del_items(ea, flags, nbytes, static_cast<may_destroy_cb_t*>(::System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(may_destroy).ToPointer()));
+}
 
 static bool ida_is_manual_insn(ea_t ea)
 {
 	return is_manual_insn(ea);
 }
 
-// ssize_t ida_export get_manual_insn(qstring *buf, ea_t ea)
+static ssize_t ida_get_manual_insn(IntPtr buf, ea_t ea)
+{
+	qstring out;
+	ssize_t len = get_manual_insn(&out, ea);
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, len);
+	}
+	return len;
+}
 
-// void ida_export set_manual_insn(ea_t ea, const char *manual_insn)
+static void ida_set_manual_insn(ea_t ea, IntPtr manual_insn)
+{
+	set_manual_insn(ea, (const char*)(manual_insn.ToPointer()));
+}
 
 static bool ida_is_flow(flags64_t F)
 {
@@ -677,7 +678,7 @@ static bool ida_clr_lzero(ea_t ea, int n)
 	return clr_lzero(ea, n);
 }
 
-static bool ida_toggle_lzero(ea_t ea, int n)  
+static bool ida_toggle_lzero(ea_t ea, int n)
 {
 	return (is_lzero(ea, n) ? clr_lzero : set_lzero)(ea, n);
 }
@@ -687,94 +688,109 @@ static bool ida_leading_zero_important(ea_t ea, int n)
 	return leading_zero_important(ea, n);
 }
 
+static int ida_get_operand_type_shift(uint32 n)
+{
+	return 20 + (4 * (n + (n > 1)));
+}
+
+static flags64_t ida_get_operand_flag(uint8 typebits, int n)
+{
+	return n >= 0 && n < UA_MAXOP ? flags64_t(typebits) << get_operand_type_shift(n) : 0;
+}
+
+static bool ida_is_flag_for_operand(flags64_t F, uint8 typebits, int n)
+{
+	return n < UA_MAXOP && (F & get_operand_flag(15ULL, n)) == get_operand_flag(typebits, n);
+}
+
 static bool ida_is_defarg0(flags64_t F)
 {
-	return (F & MS_0TYPE) != FF_0VOID;
+	return !is_flag_for_operand(F, FF_N_VOID, 0);
 }
 
 static bool ida_is_defarg1(flags64_t F)
 {
-	return (F & MS_1TYPE) != FF_1VOID;
+	return !is_flag_for_operand(F, FF_N_VOID, 1);
 }
 
 static bool ida_is_off0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0OFF;
+	return is_flag_for_operand(F, FF_N_OFF, 0);
 }
 
 static bool ida_is_off1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1OFF;
+	return is_flag_for_operand(F, FF_N_OFF, 1);
 }
 
 static bool ida_is_char0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0CHAR;
+	return is_flag_for_operand(F, FF_N_CHAR, 0);
 }
 
 static bool ida_is_char1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1CHAR;
+	return is_flag_for_operand(F, FF_N_CHAR, 1);
 }
 
 static bool ida_is_seg0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0SEG;
+	return is_flag_for_operand(F, FF_N_SEG, 0);
 }
 
 static bool ida_is_seg1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1SEG;
+	return is_flag_for_operand(F, FF_N_SEG, 1);
 }
 
 static bool ida_is_enum0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0ENUM;
+	return is_flag_for_operand(F, FF_N_ENUM, 0);
 }
 
 static bool ida_is_enum1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1ENUM;
+	return is_flag_for_operand(F, FF_N_ENUM, 1);
 }
 
 static bool ida_is_stroff0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0STRO;
+	return is_flag_for_operand(F, FF_N_STRO, 0);
 }
 
 static bool ida_is_stroff1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1STRO;
+	return is_flag_for_operand(F, FF_N_STRO, 1);
 }
 
 static bool ida_is_stkvar0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0STK;
+	return is_flag_for_operand(F, FF_N_STK, 0);
 }
 
 static bool ida_is_stkvar1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1STK;
+	return is_flag_for_operand(F, FF_N_STK, 1);
 }
 
 static bool ida_is_float0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0FLT;
+	return is_flag_for_operand(F, FF_N_FLT, 0);
 }
 
 static bool ida_is_float1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1FLT;
+	return is_flag_for_operand(F, FF_N_FLT, 1);
 }
 
 static bool ida_is_custfmt0(flags64_t F)
 {
-	return (F & MS_0TYPE) == FF_0CUST;
+	return is_flag_for_operand(F, FF_N_CUST, 0);
 }
 
 static bool ida_is_custfmt1(flags64_t F)
 {
-	return (F & MS_1TYPE) == FF_1CUST;
+	return is_flag_for_operand(F, FF_N_CUST, 1);
 }
 
 static bool ida_is_numop0(flags64_t F)
@@ -787,14 +803,14 @@ static bool ida_is_numop1(flags64_t F)
 	return is_numop1(F);
 }
 
-static flags64_t ida_get_optype_flags0(flags64_t F) 
-{ 
-	return F & MS_0TYPE; 
+static flags64_t ida_get_optype_flags0(flags64_t F)
+{
+	return F & (MS_N_TYPE << get_operand_type_shift(0));
 }
 
-static flags64_t ida_get_optype_flags1(flags64_t F) 
-{ 
-	return F & MS_1TYPE; 
+static flags64_t ida_get_optype_flags1(flags64_t F)
+{
+	return F & (MS_N_TYPE << get_operand_type_shift(1));
 }
 
 static bool ida_is_defarg(flags64_t F, int n)
@@ -877,69 +893,97 @@ static bool ida_op_enum(ea_t ea, int n, enum_t id, uchar serial)
 	return op_enum(ea, n, id, serial);
 }
 
-// enum_t ida_export get_enum_id(uchar *serial, ea_t ea, int n)
+static enum_t ida_get_enum_id(IntPtr serial, ea_t ea, int n)
+{
+	return get_enum_id((uchar*)(serial.ToPointer()), ea, n);
+}
 
-//bool ida_export op_stroff(
-//	const insn_t& insn,
-//	int n,
-//	const tid_t* path,
-//	int path_len,
-//	adiff_t delta)
+static bool ida_op_stroff(IntPtr insn, int n, IntPtr path, int path_len, adiff_t delta)
+{
+	return op_stroff(*(insn_t*)(insn.ToPointer()), n, (tid_t*)(path.ToPointer()), path_len, delta);
+}
 
-//int ida_export get_stroff_path(tid_t *path, adiff_t *delta, ea_t ea, int n)
+static int ida_get_stroff_path(IntPtr path, IntPtr delta, ea_t ea, int n)
+{
+	return get_stroff_path((tid_t*)(path.ToPointer()), (adiff_t*)(delta.ToPointer()), ea, n);
+}
 
 static bool ida_op_stkvar(ea_t ea, int n)
 {
 	return op_stkvar(ea, n);
 }
 
-// bool ida_export set_forced_operand(ea_t ea, int n, const char *op)
+static bool ida_set_forced_operand(ea_t ea, int n, IntPtr op)
+{
+	return set_forced_operand(ea, n, (const char*)(op.ToPointer()));
+}
 
-// ssize_t ida_export get_forced_operand(qstring *buf, ea_t ea, int n)
+static ssize_t ida_get_forced_operand(IntPtr buf, ea_t ea, int n)
+{
+	qstring out;
+	ssize_t len = get_forced_operand(&out, ea, n);
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, len);
+	}
+	return len;
+}
 
 static bool ida_is_forced_operand(ea_t ea, int n)
 {
 	return is_forced_operand(ea, n);
 }
 
+static flags64_t ida_combine_flags(flags64_t F)
+{
+	return (F << get_operand_type_shift(0))
+		| (F << get_operand_type_shift(1))
+		| (F << get_operand_type_shift(2))
+		| (F << get_operand_type_shift(3))
+		| (F << get_operand_type_shift(4))
+		| (F << get_operand_type_shift(5))
+		| (F << get_operand_type_shift(6))
+		| (F << get_operand_type_shift(7));
+}
+
 static flags64_t ida_char_flag()
 {
-	return FF_1CHAR | FF_0CHAR;
+	return combine_flags(3);
 }
 
 static flags64_t ida_off_flag()
 {
-	return FF_1OFF | FF_0OFF;
+	return combine_flags(5);
 }
 
 static flags64_t ida_enum_flag()
 {
-	return FF_1ENUM | FF_0ENUM;
+	return combine_flags(8);
 }
 
 static flags64_t ida_stroff_flag()
 {
-	return FF_1STRO | FF_0STRO;
+	return combine_flags(10);
 }
 
 static flags64_t ida_stkvar_flag()
 {
-	return FF_1STK | FF_0STK;
+	return combine_flags(11);
 }
 
 static flags64_t ida_flt_flag()
 {
-	return FF_1FLT | FF_0FLT;
+	return combine_flags(12);
 }
 
 static flags64_t ida_custfmt_flag()
 {
-	return FF_1CUST | FF_0CUST;
+	return combine_flags(13);
 }
 
 static flags64_t ida_seg_flag()
 {
-	return FF_1SEG | FF_0SEG;
+	return combine_flags(4);
 }
 
 static flags64_t ida_num_flag()
@@ -949,22 +993,22 @@ static flags64_t ida_num_flag()
 
 static flags64_t ida_hex_flag()
 {
-	return FF_1NUMH | FF_0NUMH;
+	return combine_flags(1);
 }
 
 static flags64_t ida_dec_flag()
 {
-	return FF_1NUMD | FF_0NUMD;
+	return combine_flags(2);
 }
 
 static flags64_t ida_oct_flag()
 {
-	return FF_1NUMO | FF_0NUMO;
+	return combine_flags(7);
 }
 
 static flags64_t ida_bin_flag()
 {
-	return FF_1NUMB | FF_0NUMB;
+	return combine_flags(6);
 }
 
 static bool ida_op_chr(ea_t ea, int n)
@@ -1367,21 +1411,53 @@ static size_t ida_get_max_strlit_length(ea_t ea, int32 strtype, int options)
 	return get_max_strlit_length(ea, strtype, options);
 }
 
-//idaman ssize_t ida_export get_strlit_contents(
-//	qstring* utf8,
-//	ea_t ea,
-//	size_t len,
-//	int32 type,
-//	size_t* maxcps = nullptr,
-//	int flags = 0);
-
+static ssize_t ida_get_strlit_contents(IntPtr utf8, ea_t ea, size_t len, int32 type, IntPtr maxcps, int flags)
+{
+	qstring out;
+	auto len2 = get_strlit_contents(&out, ea, len, type, (size_t*)(maxcps.ToPointer()), flags);
+	if (utf8 != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, utf8, len2);
+	}
+	return len2;
+}
 
 static bool ida_create_strlit(ea_t start, size_t len, int32 strtype)
 {
 	return create_strlit(start, len, strtype);
 }
 
-// to continue
+static bool ida_print_strlit_type(IntPtr out, int32 strtype, IntPtr out_tooltip, int flags)
+{
+	return print_strlit_type((qstring*)(out.ToPointer()), strtype, (qstring*)(out_tooltip.ToPointer()), flags);
+}
+
+static IntPtr ida_get_opinfo(IntPtr buf, ea_t ea, int n, flags64_t flags)
+{
+	return IntPtr((void*)get_opinfo((opinfo_t*)(buf.ToPointer()), ea, n, flags));
+}
+
+static bool ida_set_opinfo(ea_t ea, int n, flags64_t flag, IntPtr ti, bool suppress_events)
+{
+	return set_opinfo(ea, n, flag, (const opinfo_t*)(ti.ToPointer()), suppress_events);
+}
+
+static asize_t ida_get_data_elsize(ea_t ea, flags64_t F, IntPtr ti)
+{
+	return get_data_elsize(ea, F, (const opinfo_t*)(ti.ToPointer()));
+}
+
+static asize_t ida_get_full_data_elsize(ea_t ea, flags64_t F, IntPtr ti)
+{
+	asize_t nbytes = get_data_elsize(ea, F, (const opinfo_t*)(ti.ToPointer()));
+	return nbytes * bytesize(ea);
+}
+
+static int ida_is_varsize_item(ea_t ea, flags64_t F, IntPtr ti, IntPtr itemsize)
+{
+	return is_varsize_item(ea, F, (const opinfo_t*)(ti.ToPointer()), (asize_t*)(itemsize.ToPointer()));
+}
+
 static bool ida_can_define_item(ea_t ea, asize_t length, flags64_t flags)
 {
 	return can_define_item(ea, length, flags);
@@ -1402,14 +1478,34 @@ static bool ida_set_immd(ea_t ea)
 	return set_immd(ea);
 }
 
+static int ida_register_custom_data_type(IntPtr dtinfo)
+{
+	return register_custom_data_type((const data_type_t*)(dtinfo.ToPointer()));
+}
+
 static bool ida_unregister_custom_data_type(int dtid)
 {
 	return unregister_custom_data_type(dtid);
 }
 
+static int ida_register_custom_data_format(IntPtr dtform)
+{
+	return register_custom_data_format((const data_format_t*)(dtform.ToPointer()));
+}
+
 static bool ida_unregister_custom_data_format(int dfid)
 {
 	return unregister_custom_data_format(dfid);
+}
+
+static IntPtr ida_get_custom_data_type(int dtid)
+{
+	return IntPtr((void*)get_custom_data_type(dtid));
+}
+
+static IntPtr ida_get_custom_data_format(int dfid)
+{
+	return IntPtr((void*)get_custom_data_format(dfid));
 }
 
 static bool ida_attach_custom_data_format(int dtid, int dfid)
@@ -1427,26 +1523,57 @@ static bool ida_is_attached_custom_data_format(int dtid, int dfid)
 	return is_attached_custom_data_format(dtid, dfid);
 }
 
-//idaman int ida_export get_custom_data_types(
-//	intvec_t* out,
-//	asize_t min_size = 0,
-//  asize_t max_size = BADADDR);
+static int ida_get_custom_data_types(IntPtr out, asize_t min_size, asize_t max_size)
+{
+	return get_custom_data_types((intvec_t*)(out.ToPointer()), min_size, max_size);
+}
 
-// idaman int ida_export get_custom_data_formats(intvec_t *out, int dtid);
+static int ida_get_custom_data_formats(IntPtr out, int dtid)
+{
+	return get_custom_data_formats((intvec_t*)(out.ToPointer()), dtid);
+}
 
-// idaman int ida_export find_custom_data_type(const char *name);
+static int ida_find_custom_data_type(IntPtr name)
+{
+	return find_custom_data_type((const char*)(name.ToPointer()));
+}
 
-// idaman int ida_export find_custom_data_format(const char *name);
+static int ida_find_custom_data_format(IntPtr name)
+{
+	return find_custom_data_format((const char*)(name.ToPointer()));
+}
 
-// idaman bool ida_export set_cmt(ea_t ea, const char *comm, bool rptble);
+static bool ida_set_cmt(ea_t ea, IntPtr comm, bool rptble)
+{
+	return set_cmt(ea, (const char*)(comm.ToPointer()), rptble);
+}
 
-// idaman ssize_t ida_export get_cmt(qstring *buf, ea_t ea, bool rptble);
+static ssize_t ida_get_cmt(IntPtr buf, ea_t ea, bool rptble)
+{
+	qstring out;
+	ssize_t len = get_cmt(&out, ea, rptble);
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, len);
+	}
+	return len;
+}
 
-// idaman bool ida_export append_cmt(ea_t ea, const char *str, bool rptble);
+static bool ida_append_cmt(ea_t ea, IntPtr str, bool rptble)
+{
+	return append_cmt(ea, (const char*)(str.ToPointer()), rptble);
+}
 
-//idaman ssize_t ida_export get_predef_insn_cmt(
-//	qstring* buf,
-//	const insn_t& ins);
+static ssize_t ida_get_predef_insn_cmt(IntPtr buf, IntPtr ins)
+{
+	qstring out;
+	ssize_t len = get_predef_insn_cmt(&out, *(const insn_t*)(ins.ToPointer()));
+	if (buf != IntPtr::Zero)
+	{
+		::ConvertQstringToIntPtr(out, buf, len);
+	}
+	return len;
+}
 
 static ea_t ida_find_byte(ea_t sEA, asize_t size, uchar value, int bin_search_flags)
 {
@@ -1458,6 +1585,66 @@ static ea_t ida_find_byter(ea_t sEA, asize_t size, uchar value, int bin_search_f
 	return find_byter(sEA, size, value, bin_search_flags);
 }
 
+//static bool ida_parse_binpat_str(IntPtr out, ea_t ea, IntPtr in, int radix, int strlits_encoding, IntPtr errbuf)
+//{
+//	return parse_binpat_str((compiled_binpat_vec_t*)(out.ToPointer()), ea, (const char*)(in.ToPointer()), radix, strlits_encoding, (qstring*)(errbuf.ToPointer()));
+//}
+//
+//// bin_search2
+//
+//static ea_t ida_bin_search2(ea_t start_ea, ea_t end_ea, IntPtr image, IntPtr mask, size_t len, int flags) // inline
+//{
+//	compiled_binpat_vec_t bbv;
+//	compiled_binpat_t& bv = bbv.push_back();
+//	bv.bytes.append(image, len);
+//	if (mask != nullptr)
+//		bv.mask.append(mask, len);
+//	return bin_search2(start_ea, end_ea, bbv, flags);
+//}
+//
+//// bin_search3
+//
+//static ea_t ida_next_inited(ea_t ea, ea_t maxea) // inline
+//{
+//	if (ea >= maxea)
+//		return ea_t(-1);
+//	++ea;
+//	return find_byte(ea, maxea - ea, 0, 4);
+//}
+//
+//static ea_t ida_prev_inited(ea_t ea, ea_t minea) // inline
+//{
+//	if (ea <= minea)
+//		return ea_t(-1);
+//	--ea;
+//	return find_byter(minea, ea - minea, 0, 4);
+//}
+//
+//static bool ida_equal_bytes(ea_t ea, IntPtr image, IntPtr mask, size_t len, int bin_search_flags)
+//{
+//	return equal_bytes(ea, (const uchar*)(image.ToPointer()), (const uchar*)(mask.ToPointer()), len, bin_search_flags);
+//}
+//
+//static bool ida_bytes_match_for_bin_search(uchar c1, uchar c2, IntPtr mask, int i, int bin_search_flags) // inline
+//{
+//	if ((bin_search_flags & 1) == 0) {
+//		c1 = qtoupper(c1);
+//		c2 = qtoupper(c2);
+//	}
+//	if (mask != nullptr) {
+//		if ((bin_search_flags & 32) != 0)
+//			return ((c1 ^ c2) & mask[i]) == 0;
+//		if (mask == ((const uchar*)255)) {
+//			if (c2 == 255)
+//				return true;
+//		}
+//		else if (mask[i] == 0) {
+//			return true;
+//		}
+//	}
+//	return c1 == c2;
+//}
+//
 static bool ida_update_hidden_range(IntPtr ha)
 {
 	return update_hidden_range((const hidden_range_t*)(ha.ToPointer()));
@@ -1539,6 +1726,11 @@ static bool ida_get_mapping(IntPtr from, IntPtr to, IntPtr size, size_t n)
 }
 
 #ifdef OBSOLETE_FUNCS
+static ea_t ida_bin_search(ea_t _0, ea_t _1, IntPtr _2, IntPtr _3, size_t _4, int _5, int _6)
+{
+	return bin_search(_0, _1, (const char*)(_2.ToPointer()), (const char*)(_3.ToPointer()), _4, _5, _6);
+}
+
 static uchar ida_get_8bit(IntPtr ea, IntPtr v, IntPtr nbit)
 {
 	return get_8bit((ea_t*)(ea.ToPointer()), (uint32*)(v.ToPointer()), (int*)(nbit.ToPointer()));

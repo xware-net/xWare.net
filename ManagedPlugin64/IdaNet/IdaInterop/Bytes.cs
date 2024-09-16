@@ -53,7 +53,25 @@ namespace IdaNet.IdaInterop
         FF_SIGN = 0x0000000000020000,            //< Inverted sign of operands
         FF_BNOT = 0x0000000000040000,            //< Bitwise negation of operands
         FF_UNUSED = 0x0000000000080000,           //< unused bit (was used for variable bytes)
+        FF_ANYNAME = 0x000000000000C000,
 
+        MS_N_TYPE = 0xF,                          ///< Mask for nth arg
+        FF_N_VOID = 0x0,                             ///< Void (unknown)?
+        FF_N_NUMH = 0x1,                             ///< Hexadecimal number?
+        FF_N_NUMD = 0x2,                             ///< Decimal number?
+        FF_N_CHAR = 0x3,                             ///< Char ('x')?
+        FF_N_SEG = 0x4,                             ///< Segment?
+        FF_N_OFF = 0x5,                             ///< Offset?
+        FF_N_NUMB = 0x6,                             ///< Binary number?
+        FF_N_NUMO = 0x7,                             ///< Octal number?
+        FF_N_ENUM = 0x8,                             ///< Enumeration?
+        FF_N_FOP = 0x9,                             ///< Forced operand?
+        FF_N_STRO = 0xA,                             ///< Struct offset?
+        FF_N_STK = 0xB,                             ///< Stack variable?
+        FF_N_FLT = 0xC,                             ///< Floating point number?
+        FF_N_CUST = 0xD,                             ///< Custom representation?
+
+        MS_CODE = 0x00000000F0000000,             ///< Mask for CODE typing
         FF_FUNC = 0x0000000010000000,             ///< function start?
         FF_IMMD = 0x0000000040000000,             ///< Has Immediate value ?
         FF_JUMP = 0x0000000080000000,             ///< Has jump table or switch_info?

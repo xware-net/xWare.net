@@ -108,9 +108,9 @@ static IntPtr ida_get_segm_by_sel(sel_t selector)
 	return IntPtr((void*)get_segm_by_sel(selector));
 }
 
-static bool ida_add_segm_ex(segment_t* s, IntPtr name, IntPtr sclass, int flags)
+static bool ida_add_segm_ex(IntPtr s, IntPtr name, IntPtr sclass, int flags)
 {
-	return add_segm_ex(s, (const char*)(name.ToPointer()), (const char*)(sclass.ToPointer()), flags);
+	return add_segm_ex((segment_t*)(s.ToPointer()), (const char*)(name.ToPointer()), (const char*)(sclass.ToPointer()), flags);
 }
 
 static bool ida_add_segm(ea_t para, ea_t start, ea_t end, IntPtr name, IntPtr sclass, int flags)
