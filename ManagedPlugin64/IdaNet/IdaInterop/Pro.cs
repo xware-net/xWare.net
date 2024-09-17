@@ -8,11 +8,6 @@ namespace IdaNet.IdaInterop
 {
     public class BytevecT : QVector<byte>
     {
-        public bool Empty()
-        {
-            return base.Count == 0;
-        }
-
         public void Qclear()
         {
             base.Clear();
@@ -31,7 +26,7 @@ namespace IdaNet.IdaInterop
 
         public bool AllZeros()
         {
-            for (int i = 0; i < base.Count; ++i)
+            for (int i = 0; i < base.Size(); ++i)
             {
                 if (this[i] != 0)
                     return false;

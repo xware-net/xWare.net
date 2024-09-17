@@ -148,13 +148,8 @@ namespace IdaNet.IdaInterop
 		}
     }
 
-    public class RangevecT : List<RangeT>
+    public class RangevecT : QVector<RangeT>
 	{
-        public bool Empty()
-        {
-            return base.Count == 0;
-        }
-
         public void Qclear()
         {
             base.Clear();

@@ -198,79 +198,290 @@ namespace IdaNet.IdaInterop
     //    }
     //}
 
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
+    #region QVector old
+    //public class QVector<T> : IEnumerable<T>
+    //{
+    //    private List<T> _items;
 
-    public class QVector<T> : IEnumerable<T>
+    //    // Constructor to initialize with a specific size
+    //    public QVector(int size = 0)
+    //    {
+    //        _items = new List<T>(size);
+    //    }
+
+    //    // Access element at index
+    //    public T this[int index]
+    //    {
+    //        get => _items[index];
+    //        set => _items[index] = value;
+    //    }
+
+    //    // Number of elements
+    //    public int Count => _items.Count;
+
+    //    // Add new element
+    //    public void Add(T item)
+    //    {
+    //        _items.Add(item);
+    //    }
+
+    //    public void AddRange(IEnumerable<T> items)
+    //    {
+    //        _items.AddRange(items);
+    //    }
+
+    //    // Remove an element
+    //    public bool Remove(T item)
+    //    {
+    //        return _items.Remove(item);
+    //    }
+
+    //    // Insert an element at a specific index
+    //    public void Insert(int index, T item)
+    //    {
+    //        _items.Insert(index, item);
+    //    }
+
+    //    // Clear the list
+    //    public void Clear()
+    //    {
+    //        _items.Clear();
+    //    }
+
+    //    // Swap two elements by index
+    //    public void Swap(int index1, int index2)
+    //    {
+    //        if (index1 >= 0 && index2 >= 0 && index1 < _items.Count && index2 < _items.Count)
+    //        {
+    //            T temp = _items[index1];
+    //            _items[index1] = _items[index2];
+    //            _items[index2] = temp;
+    //        }
+    //    }
+
+    //    // Enumerator implementation to support foreach loops
+    //    public IEnumerator<T> GetEnumerator()
+    //    {
+    //        return _items.GetEnumerator();
+    //    }
+
+    //    IEnumerator IEnumerable.GetEnumerator()
+    //    {
+    //        return GetEnumerator();
+    //    }
+    //}
+
+    #endregion
+
+    public class QVector<T> : IEnumerable<T> where T : new()
     {
-        private List<T> _items;
+        private T[] _array;
+        private int _size;
+        private int _capacity;
 
-        // Constructor to initialize with a specific size
-        public QVector(int size = 0)
+        public QVector()
         {
-            _items = new List<T>(size);
+            _capacity = 4;
+            _array = new T[_capacity];
+            _size = 0;
         }
 
-        // Access element at index
+        public QVector(int capacity)
+        {
+            _capacity = capacity;
+            _array = new T[_capacity];
+            _size = 0;
+        }
+
+        // Copy constructor
+        public QVector(QVector<T> other)
+        {
+            _capacity = other._capacity;
+            _size = other._size;
+            _array = new T[_capacity];
+            Array.Copy(other._array, _array, _size);
+        }
+
+        // Return the number of elements
+        public int Size() => _size;
+
+        // Check if the vector is empty
+        public bool Empty() => _size == 0;
+
+        // Get the element at the front
+        public T Front() => _array[0];
+
+        // Get the element at the back
+        public T Back() => _array[_size - 1];
+
+        // Access an element by index
         public T this[int index]
         {
-            get => _items[index];
-            set => _items[index] = value;
-        }
-
-        // Number of elements
-        public int Count => _items.Count;
-
-        // Add new element
-        public void Add(T item)
-        {
-            _items.Add(item);
-        }
-
-        public void AddRange(IEnumerable<T> items)
-        {
-            _items.AddRange(items);
-        }
-
-        // Remove an element
-        public bool Remove(T item)
-        {
-            return _items.Remove(item);
-        }
-
-        // Insert an element at a specific index
-        public void Insert(int index, T item)
-        {
-            _items.Insert(index, item);
-        }
-
-        // Clear the list
-        public void Clear()
-        {
-            _items.Clear();
-        }
-
-        // Swap two elements by index
-        public void Swap(int index1, int index2)
-        {
-            if (index1 >= 0 && index2 >= 0 && index1 < _items.Count && index2 < _items.Count)
+            get
             {
-                T temp = _items[index1];
-                _items[index1] = _items[index2];
-                _items[index2] = temp;
+                if (index >= _size || index < 0)
+                    throw new ArgumentOutOfRangeException();
+                return _array[index];
+            }
+            set
+            {
+                if (index >= _size || index < 0)
+                    throw new ArgumentOutOfRangeException();
+                _array[index] = value;
             }
         }
 
-        // Enumerator implementation to support foreach loops
-        public IEnumerator<T> GetEnumerator()
+        // Add an element at the end
+        public void PushBack(T value)
         {
-            return _items.GetEnumerator();
+            if (_size == _capacity)
+            {
+                Resize(_capacity * 2);  // Double the capacity when the array is full
+            }
+            _array[_size] = value;
+            _size++;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        // Remove the last element
+        public void PopBack()
         {
-            return GetEnumerator();
+            if (_size > 0)
+            {
+                _size--;
+                _array[_size] = default(T);  // Optional: Clear the removed element
+            }
+        }
+
+        // Resize the vector
+        public void Resize(int newSize, T value = default(T))
+        {
+            if (newSize > _capacity)
+            {
+                ResizeCapacity(newSize);
+            }
+
+            for (int i = _size; i < newSize; i++)
+            {
+                _array[i] = value;
+            }
+            _size = newSize;
+        }
+
+        private void ResizeCapacity(int newCapacity)
+        {
+            T[] newArray = new T[newCapacity];
+            Array.Copy(_array, newArray, _size);
+            _array = newArray;
+            _capacity = newCapacity;
+        }
+
+        public void AddRange(IEnumerable<T> collection)
+        {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
+
+            // Calculate the total number of elements to be added
+            int collectionCount = 0;
+            foreach (var item in collection)
+            {
+                collectionCount++;
+            }
+
+            // Ensure capacity for the new elements
+            if (_size + collectionCount > _capacity)
+            {
+                ResizeCapacity(_size + collectionCount);
+            }
+
+            // Add elements to the array
+            foreach (var item in collection)
+            {
+                _array[_size] = item;
+                _size++;
+            }
+        }
+
+        // Clear the vector
+        public void Clear()
+        {
+            _array = new T[_capacity];
+            _size = 0;
+        }
+
+        // Get an enumerator to support IEnumerable<T>
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                yield return _array[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        // Insert an element at a specific index
+        public void Insert(int index, T value)
+        {
+            if (index < 0 || index > _size)
+                throw new ArgumentOutOfRangeException();
+
+            if (_size == _capacity)
+            {
+                Resize(_capacity * 2);  // Double the capacity when the array is full
+            }
+
+            Array.Copy(_array, index, _array, index + 1, _size - index);
+            _array[index] = value;
+            _size++;
+        }
+
+        // Remove an element at a specific index
+        public void Erase(int index)
+        {
+            if (index < 0 || index >= _size)
+                throw new ArgumentOutOfRangeException();
+
+            Array.Copy(_array, index + 1, _array, index, _size - index - 1);
+            _size--;
+            _array[_size] = default(T);  // Optional: Clear the removed element
+        }
+
+        // Check if the vector contains the value
+        public bool Has(T value)
+        {
+            for (int i = 0; i < _size; i++)
+            {
+                if (EqualityComparer<T>.Default.Equals(_array[i], value))
+                    return true;
+            }
+            return false;
+        }
+
+        // Add a unique element
+        public bool AddUnique(T value)
+        {
+            if (!Has(value))
+            {
+                PushBack(value);
+                return true;
+            }
+            return false;
+        }
+
+        // Swap contents with another QVector
+        public void Swap(QVector<T> other)
+        {
+            T[] tempArray = _array;
+            int tempSize = _size;
+            int tempCapacity = _capacity;
+
+            _array = other._array;
+            _size = other._size;
+            _capacity = other._capacity;
+
+            other._array = tempArray;
+            other._size = tempSize;
+            other._capacity = tempCapacity;
         }
     }
 
