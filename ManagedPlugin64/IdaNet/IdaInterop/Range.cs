@@ -159,7 +159,7 @@ namespace IdaNet.IdaInterop
     public enum RangeKindT
 	{
 		RANGE_KIND_UNKNOWN,
-		RANGE_KIND_FUNC,			
+		RANGE_KIND_FUNC,
 		RANGE_KIND_SEGMENT,			
 		RANGE_KIND_HIDDEN_RANGE		
 	}
