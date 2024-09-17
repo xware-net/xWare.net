@@ -1,5 +1,7 @@
 #pragma once
 
+// complete
+
 [::System::Runtime::InteropServices::UnmanagedFunctionPointer(::System::Runtime::InteropServices::CallingConvention::Cdecl)]
 delegate int Func_int_UInt64_long_UInt64_UInt64___IntPtr(unsigned long long ea, long long fpos, unsigned long long o, unsigned long long v, ::System::IntPtr ud);
 
@@ -1585,66 +1587,72 @@ static ea_t ida_find_byter(ea_t sEA, asize_t size, uchar value, int bin_search_f
 	return find_byter(sEA, size, value, bin_search_flags);
 }
 
-//static bool ida_parse_binpat_str(IntPtr out, ea_t ea, IntPtr in, int radix, int strlits_encoding, IntPtr errbuf)
-//{
-//	return parse_binpat_str((compiled_binpat_vec_t*)(out.ToPointer()), ea, (const char*)(in.ToPointer()), radix, strlits_encoding, (qstring*)(errbuf.ToPointer()));
-//}
-//
-//// bin_search2
-//
-//static ea_t ida_bin_search2(ea_t start_ea, ea_t end_ea, IntPtr image, IntPtr mask, size_t len, int flags) // inline
-//{
-//	compiled_binpat_vec_t bbv;
-//	compiled_binpat_t& bv = bbv.push_back();
-//	bv.bytes.append(image, len);
-//	if (mask != nullptr)
-//		bv.mask.append(mask, len);
-//	return bin_search2(start_ea, end_ea, bbv, flags);
-//}
-//
-//// bin_search3
-//
-//static ea_t ida_next_inited(ea_t ea, ea_t maxea) // inline
-//{
-//	if (ea >= maxea)
-//		return ea_t(-1);
-//	++ea;
-//	return find_byte(ea, maxea - ea, 0, 4);
-//}
-//
-//static ea_t ida_prev_inited(ea_t ea, ea_t minea) // inline
-//{
-//	if (ea <= minea)
-//		return ea_t(-1);
-//	--ea;
-//	return find_byter(minea, ea - minea, 0, 4);
-//}
-//
-//static bool ida_equal_bytes(ea_t ea, IntPtr image, IntPtr mask, size_t len, int bin_search_flags)
-//{
-//	return equal_bytes(ea, (const uchar*)(image.ToPointer()), (const uchar*)(mask.ToPointer()), len, bin_search_flags);
-//}
-//
-//static bool ida_bytes_match_for_bin_search(uchar c1, uchar c2, IntPtr mask, int i, int bin_search_flags) // inline
-//{
-//	if ((bin_search_flags & 1) == 0) {
-//		c1 = qtoupper(c1);
-//		c2 = qtoupper(c2);
-//	}
-//	if (mask != nullptr) {
-//		if ((bin_search_flags & 32) != 0)
-//			return ((c1 ^ c2) & mask[i]) == 0;
-//		if (mask == ((const uchar*)255)) {
-//			if (c2 == 255)
-//				return true;
-//		}
-//		else if (mask[i] == 0) {
-//			return true;
-//		}
-//	}
-//	return c1 == c2;
-//}
-//
+static bool ida_parse_binpat_str(IntPtr out, ea_t ea, IntPtr in, int radix, int strlits_encoding, IntPtr errbuf)
+{
+	return parse_binpat_str((compiled_binpat_vec_t*)(out.ToPointer()), ea, (const char*)(in.ToPointer()), radix, strlits_encoding, (qstring*)(errbuf.ToPointer()));
+}
+
+// bin_search2
+static ea_t ida_bin_search2(ea_t start_ea, ea_t end_ea, IntPtr image, IntPtr mask, size_t len, int flags)
+{
+	compiled_binpat_vec_t bbv;
+	compiled_binpat_t& bv = bbv.push_back();
+	bv.bytes.append((const uchar*)(image.ToPointer()), len);
+	if (mask != nullptr)
+		bv.mask.append((const uchar*)(mask.ToPointer()), len);
+	return bin_search2(start_ea, end_ea, bbv, flags);
+}
+
+// bin_search3
+static ea_t ida_bin_search3(IntPtr out_matched_idx, ea_t start_ea, ea_t end_ea, IntPtr data, int flags)
+{
+	return bin_search3((size_t*)(out_matched_idx.ToPointer()), start_ea, end_ea, *(const compiled_binpat_vec_t*)(data.ToPointer()), flags);
+}
+
+static ea_t ida_next_inited(ea_t ea, ea_t maxea) 
+{
+	if (ea >= maxea)
+		return ea_t(-1);
+	++ea;
+	return find_byte(ea, maxea - ea, 0, 4);
+}
+
+static ea_t ida_prev_inited(ea_t ea, ea_t minea) 
+{
+	if (ea <= minea)
+		return ea_t(-1);
+	--ea;
+	return find_byter(minea, ea - minea, 0, 4);
+}
+
+static bool ida_equal_bytes(ea_t ea, IntPtr image, IntPtr mask, size_t len, int bin_search_flags)
+{
+	return equal_bytes(ea, (const uchar*)(image.ToPointer()), (const uchar*)(mask.ToPointer()), len, bin_search_flags);
+}
+
+static bool ida_bytes_match_for_bin_search(uchar c1, uchar c2, IntPtr maskPtr, int i, int bin_search_flags)
+{
+	auto mask = (const uchar*)(maskPtr.ToPointer());
+
+	if ((bin_search_flags & BIN_SEARCH_CASE) == 0) {
+		c1 = qtoupper(c1);
+		c2 = qtoupper(c2);
+	}
+	if (mask != nullptr) {
+		if ((bin_search_flags & BIN_SEARCH_BITMASK) != 0)
+			return ((c1 ^ c2) & mask[i]) == 0;
+		if (mask == ((const uchar*)SKIP_FF_MASK)) 
+		{
+			if (c2 == 0xff)
+				return true;
+		}
+		else if (mask[i] == 0) {
+			return true;
+		}
+	}
+	return c1 == c2;
+}
+
 static bool ida_update_hidden_range(IntPtr ha)
 {
 	return update_hidden_range((const hidden_range_t*)(ha.ToPointer()));
