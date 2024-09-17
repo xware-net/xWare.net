@@ -8,11 +8,6 @@ namespace IdaNet.IdaInterop
 {
     public class BytevecT : QVector<byte>
     {
-        public void Qclear()
-        {
-            base.Clear();
-        }
-
         public BytevecT(byte[] value)
         {
             Append(value);

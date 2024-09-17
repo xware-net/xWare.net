@@ -150,18 +150,14 @@ namespace IdaNet.IdaInterop
 
     public class RangevecT : QVector<RangeT>
 	{
-        public void Qclear()
-        {
-            base.Clear();
-        }
     }
 
     public enum RangeKindT
 	{
 		RANGE_KIND_UNKNOWN,
 		RANGE_KIND_FUNC,
-		RANGE_KIND_SEGMENT,			
-		RANGE_KIND_HIDDEN_RANGE		
+		RANGE_KIND_SEGMENT,
+		RANGE_KIND_HIDDEN_RANGE,
 	}
 
     public class RangeSetT 

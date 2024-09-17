@@ -401,6 +401,13 @@ namespace IdaNet.IdaInterop
             }
         }
 
+        public void Qclear()
+        {
+            // Clear all elements
+            Array.Clear(_array, 0, _size);
+            _size = 0; // Reset size, but keep the allocated capacity
+        }
+
         // Clear the vector
         public void Clear()
         {
