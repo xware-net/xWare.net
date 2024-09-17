@@ -13,6 +13,9 @@ using FlagsT = System.UInt32;
 using Flags64T = System.UInt64;
 
 using static IdaPlusPlus.IdaInterop;
+using IdaNet.IdaInterop;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace IdaNet.IdaInterop
 {
@@ -379,13 +382,58 @@ namespace IdaNet.IdaInterop
         }
     }
 
-    public class CompiledBinpatT
+    public class CompiledBinpatT : IEquatable<CompiledBinpatT>
     {
-        public IntPtr UnmanagedPtr { get; set; }
+        public BytevecT Bytes { get; set; }
+        public BytevecT Mask { get; set; }
+        public RangevecT Strlits { get; set; }
+        public int Encidx { get; set; }
 
-        public CompiledBinpatT(IntPtr ptr)
+        public CompiledBinpatT()
         {
-            UnmanagedPtr = ptr;
+            Encidx = -1;
+        }
+
+        public bool AllBytesDefined()
+        {
+            return Mask.Empty();
+        }
+
+        public void Qclear()
+        {
+            Bytes.Qclear();
+            Mask.Qclear();
+            Strlits.Qclear();
+            Encidx = -1;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CompiledBinpatT);
+        }
+
+        public bool Equals(CompiledBinpatT other)
+        {
+            return other != null 
+                && Bytes == other.Bytes
+                && Mask == other.Mask
+                && Strlits == other.Strlits
+                && Encidx == other.Encidx;
+        }
+
+        public override int GetHashCode() => (Bytes, Mask, Strlits, Encidx).GetHashCode();
+
+        public static bool operator ==(CompiledBinpatT a, CompiledBinpatT b)
+        {
+            return a.Bytes == b.Bytes
+                && a.Mask == b.Mask
+                && a.Strlits == b.Strlits
+                && a.Encidx == b.Encidx;
+        }
+
+        public static bool operator !=(CompiledBinpatT a, CompiledBinpatT b)
+        {
+            return !(a == b);
         }
     }
 

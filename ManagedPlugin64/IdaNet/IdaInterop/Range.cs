@@ -150,6 +150,15 @@ namespace IdaNet.IdaInterop
 
     public class RangevecT : List<RangeT>
 	{
+        public bool Empty()
+        {
+            return base.Count == 0;
+        }
+
+        public void Qclear()
+        {
+            base.Clear();
+        }
     }
 
     public enum RangeKindT

@@ -1772,5 +1772,3 @@ static ea_t ida_find_binary2(ea_t start_ea, ea_t end_ea, IntPtr pattern, IntPtr 
 	else
 		return BADADDR;
 }
-
-
