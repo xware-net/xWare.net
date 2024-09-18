@@ -1324,7 +1324,7 @@ namespace ManagedPlugin.Source
                 IntPtr mangledPtr = Marshal.StringToHGlobalAnsi(mangled);
                 IntPtr qstrPtr = Marshal.AllocHGlobal(DefineConstants.MAXSTR);
                 // IDA demangler for everything else
-                int result = ida_demangle_name(qstrPtr, mangledPtr, DefineConstants.M_COMPILER, (int)(demreq_type_t.DQT_FULL));
+                int result = ida_demangle_name(qstrPtr, mangledPtr, DefineConstants.M_COMPILER, (int)(DemreqTypeT.DQT_FULL));
                 if (result < 0)
                 {
                     return (false);

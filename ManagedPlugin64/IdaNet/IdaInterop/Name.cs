@@ -33,7 +33,7 @@ namespace IdaNet.IdaInterop
         GN_NOT_DUMMY = 0x0200, ///< do not return a dummy name
     }
 
-    public enum demreq_type_t
+    public enum DemreqTypeT
     {
         DQT_NPURGED_8 = -8, // only calculate number of purged bytes (sizeof(arg)==8)
         DQT_NPURGED_4 = -4, // only calculate number of purged bytes (sizeof(arg)==4)

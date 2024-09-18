@@ -316,7 +316,7 @@ namespace IdaNet.IdaInterop
             finally { Marshal.FreeCoTaskMem(nativeBuffer); }
         }
 
-        public void Altadjust2(nodeidx_t from, nodeidx_t to, nodeidx_t size, ref altadjust_visitor_t av)
+        public void Altadjust2(nodeidx_t from, nodeidx_t to, nodeidx_t size, ref AltadjustVisitorT av)
         {
             //ida_netnode_altadjust2(this.Index, from, to, size, );
         }
@@ -857,8 +857,8 @@ namespace IdaNet.IdaInterop
     }
     #endregion
 
-    public abstract class altadjust_visitor_t
+    public abstract class AltadjustVisitorT
     {
-        public abstract bool should_skip(nodeidx_t ea);
+        public abstract bool ShouldSkip(nodeidx_t ea);
     };
 }

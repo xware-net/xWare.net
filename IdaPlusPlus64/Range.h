@@ -50,7 +50,7 @@ static bool ida_rangeset_t_intersect(IntPtr p_0, IntPtr aset)
 	return rangeset_t_intersect((::rangeset_t*)(p_0.ToPointer()), *(const ::rangeset_t*)(aset.ToPointer()));
 }
 
-static IntPtr ida_rangeset_t_find_range(IntPtr p_0, unsigned long long ea)
+static IntPtr ida_rangeset_t_find_range(IntPtr p_0, ea_t ea)
 {
 	return IntPtr((void *)rangeset_t_find_range((const ::rangeset_t*)(p_0.ToPointer()), ea));
 }
