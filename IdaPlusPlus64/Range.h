@@ -1,9 +1,9 @@
 #pragma once
 
-//static unsigned long long ida_range_t_print(IntPtr p_0, IntPtr buf, size_t bufsize)
-//{
-//	return range_t_print((const ::range_t*)(p_0.ToPointer()), (char*)(buf.ToPointer()), bufsize);
-//}
+static unsigned long long ida_range_t_print(IntPtr p_0, IntPtr buf, size_t bufsize)
+{
+	return range_t_print((const ::range_t*)(p_0.ToPointer()), (char*)(buf.ToPointer()), bufsize);
+}
 
 static bool ida_rangeset_t_add(IntPtr p_0, IntPtr range)
 {

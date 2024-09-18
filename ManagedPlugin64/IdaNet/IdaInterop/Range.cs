@@ -20,17 +20,34 @@ namespace IdaNet.IdaInterop
 {
     public class RangeT : IEquatable<RangeT>
     {
+        public IntPtr UnmanagedPtr;
         public EaT StartEa;
         public EaT EndEa;
 
         public RangeT()
         {
+            UnmanagedPtr = IntPtr.Zero;
+            this.StartEa = 0;
+            this.EndEa = 0;
+        }
+
+        public RangeT(IntPtr ptr)
+        {
+            UnmanagedPtr = ptr;
             this.StartEa = 0;
             this.EndEa = 0;
         }
 
         public RangeT(EaT ea1, EaT ea2)
         {
+            UnmanagedPtr = IntPtr.Zero;
+            this.StartEa = ea1;
+            this.EndEa = ea2;
+        }
+
+        public RangeT(IntPtr ptr, EaT ea1, EaT ea2)
+        {
+            UnmanagedPtr = ptr;
             this.StartEa = ea1;
             this.EndEa = ea2;
         }
@@ -130,21 +147,12 @@ namespace IdaNet.IdaInterop
                    EndEa == other.EndEa;
         }
 
-        public override int GetHashCode()
-        {
-            int hashCode = 662085783;
-            hashCode = hashCode * -1521134295 + StartEa.GetHashCode();
-            hashCode = hashCode * -1521134295 + EndEa.GetHashCode();
-            return hashCode;
-        }
+        public override int GetHashCode() => (StartEa, EndEa).GetHashCode();
 
-        /// Print the Range.
-        /// \param buf the output buffer
-        /// \param bufsize the size of the buffer
-        //public size_t print(ref string buf, size_t bufsize)
-        //{
-        //	return new ida_export(range_t_print(this, ref buf, new size_t(bufsize)));
-        //}
+        public SizeT Print(IntPtr buf, SizeT bufsize)
+        {
+            return ida_range_t_print(UnmanagedPtr, buf, bufsize);
+        }
 
         public override string ToString()
         {
