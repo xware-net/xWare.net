@@ -67,15 +67,15 @@ namespace IdaNet.IdaInterop
             return ImpliedObject.Compare(r) != 0;
         }
 
-        //public static bool operator >(Range ImpliedObject, in Range r)
-        //{
-        //	return ImpliedObject.Compare(r) > 0;
-        //}
+        public static bool operator >(RangeT ImpliedObject, in RangeT r)
+        {
+            return ImpliedObject.Compare(r) > 0;
+        }
 
-        //public static bool operator <(Range ImpliedObject, in Range r)
-        //{
-        //	return ImpliedObject.Compare(r) < 0;
-        //}
+        public static bool operator <(RangeT ImpliedObject, in RangeT r)
+        {
+            return ImpliedObject.Compare(r) < 0;
+        }
 
         public bool Contains(EaT ea)
         {
