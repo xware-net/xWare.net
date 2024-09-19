@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using ea_t = System.UInt64;
-using sel_t = System.UInt64;
-using size_t = System.UInt64;
-using asize_t = System.UInt64;
-using adiff_t = System.Int64;
-using uval_t = System.UInt64;
-using bgcolor_t = System.UInt32;
-using nodeidx_t = System.UInt64;
+using EaT = System.UInt64;
+using SelT = System.UInt64;
+using SizeT = System.UInt64;
+using AsizeT = System.UInt64;
+using AdiffT = System.Int64;
+using UvalT = System.UInt64;
+using BgcolorT = System.UInt32;
+using NodeidxT = System.UInt64;
 
 using IdaNet.IdaInterop;
 using System.Runtime.InteropServices;
@@ -25,6 +25,11 @@ namespace ManagedPlugin.Source
     {
         public static bool Run()
         {
+            RangeT range = new RangeT(0x10000000, 0x20000000);
+            IntPtr buf = Marshal.AllocHGlobal(0x100);
+            range.Print(buf, 0x100);
+            string buf1 = Marshal.PtrToStringAnsi(buf);
+            Marshal.FreeHGlobal(buf);
             List<IntPtr> sdirsPtr = new List<IntPtr>();
             int num = ida_get_ida_subdirs(sdirsPtr, Marshal.StringToHGlobalAnsi("plugins"), 0x00000000);
             var dirs = MarshalingUtils.ListOfIntPtrToStringArray(sdirsPtr, num);

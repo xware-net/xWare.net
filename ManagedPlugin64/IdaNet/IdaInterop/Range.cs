@@ -18,36 +18,21 @@ using System.Security.Cryptography;
 
 namespace IdaNet.IdaInterop
 {
+    [StructLayout(LayoutKind.Sequential)]
     public class RangeT : IEquatable<RangeT>
     {
-        public IntPtr UnmanagedPtr;
         public EaT StartEa;
         public EaT EndEa;
 
         public RangeT()
         {
-            UnmanagedPtr = IntPtr.Zero;
-            this.StartEa = 0;
-            this.EndEa = 0;
-        }
-
-        public RangeT(IntPtr ptr)
-        {
-            UnmanagedPtr = ptr;
             this.StartEa = 0;
             this.EndEa = 0;
         }
 
         public RangeT(EaT ea1, EaT ea2)
         {
-            UnmanagedPtr = IntPtr.Zero;
-            this.StartEa = ea1;
-            this.EndEa = ea2;
-        }
-
-        public RangeT(IntPtr ptr, EaT ea1, EaT ea2)
-        {
-            UnmanagedPtr = ptr;
+            //UnmanagedPtr = IntPtr.Zero;
             this.StartEa = ea1;
             this.EndEa = ea2;
         }
@@ -151,7 +136,11 @@ namespace IdaNet.IdaInterop
 
         public SizeT Print(IntPtr buf, SizeT bufsize)
         {
-            return ida_range_t_print(UnmanagedPtr, buf, bufsize);
+            IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(RangeT)));
+            Marshal.StructureToPtr(this, ptr, false);
+            var ret = ida_range_t_print(ptr, buf, bufsize);
+            Marshal.FreeHGlobal(ptr);
+            return ret;
         }
 
         public override string ToString()
