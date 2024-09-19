@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ea_t = System.UInt64;
-using tid_t = System.UInt64;
-using sel_t = System.UInt64;
-using size_t = System.UInt64;
-using asize_t = System.UInt64;
-using adiff_t = System.Int64;
-using uval_t = System.UInt64;
-using bgcolor_t = System.UInt32;
-using flags_t = System.UInt32;
+using EaT = System.UInt64;
+using TidT = System.UInt64;
+using SelT = System.UInt64;
+using SizeT = System.UInt64;
+using AsizeT = System.UInt64;
+using AdiffT = System.Int64;
+using UvalT = System.UInt64;
+using BgcolorT = System.UInt32;
+using FlagsT = System.UInt32;
 
 using System.Runtime.InteropServices;
 
@@ -47,7 +47,7 @@ namespace IdaNet.IdaInterop
     [Flags()]
     public enum MemberProperties : UInt32
     {
-        MF_OK = 0x00000001,       
+        MF_OK = 0x00000001,
         MF_UNIMEM = 0x00000002,
         MF_HASUNI = 0x00000004,
         MF_BYTIL = 0x00000008,
@@ -71,26 +71,91 @@ namespace IdaNet.IdaInterop
         SF_GHOST = 0x00001000,
     }
 
+    [Flags()]
+    public enum MemberFlags : UInt32
+    {
+        MF_OK = 0x00000001,    ///< is the member ok? (always yes)
+        MF_UNIMEM = 0x00000002,    ///< is a member of a union?
+        MF_HASUNI = 0x00000004,    ///< has members of type "union"?
+        MF_BYTIL = 0x00000008,    ///< the member was created due to the type system
+        MF_HASTI = 0x00000010,    ///< has type information?
+        MF_BASECLASS = 0x00000020,    ///< a special member representing base class
+        MF_DTOR = 0x00000040,    ///< a special member representing destructor
+        MF_DUPNAME = 0x00000080,    ///< duplicate name resolved with _N suffix (N==soff)
+        MF_RESERVED1 = 0x80000000,    ///< reserved (for internal usage)
+    }
+
     public class MemberT
     {
         public IntPtr UnmanagedPtr { get; set; }
+        public TidT Id { get; set; }
+        public EaT Soff { get; set; }
+        public EaT Eoff { get; set; }
+        public FlagsT Flag { get; set; }
+        public UInt32 Props { get; set; }
 
         public MemberT(IntPtr ptr)
         {
             UnmanagedPtr = ptr;
+        }
+
+        bool Unimem()
+        {
+            return (Props & (UInt32)MemberFlags.MF_UNIMEM) != 0;
+        }
+
+        bool HasUnion()
+        {
+            return (Props & (UInt32)MemberFlags.MF_HASUNI) != 0;
+        }
+
+        bool ByTil()
+        {
+            return (Props & (UInt32)MemberFlags.MF_BYTIL) != 0;
+        }
+
+        bool HasTi()
+        {
+            return (Props & (UInt32)MemberFlags.MF_HASTI) != 0;
+        }
+
+        bool IsBaseclass()
+        {
+            return (Props & (UInt32)MemberFlags.MF_BASECLASS) != 0;
+        }
+
+        bool IsDupname()
+        {
+            return (Props & (UInt32)MemberFlags.MF_DUPNAME) != 0;
+
+        }
+
+        bool IsDestructor()
+        {
+            return (Props & (UInt32)MemberFlags.MF_DTOR) != 0;
+        }
+
+        EaT GetSoff()
+        {
+            return Unimem() ? 0 : Soff;
+        }
+
+        AsizeT GetSize()
+        {
+            return Eoff - GetSoff();
         }
     }
 
     public unsafe struct StrpathT
     {
         int len;
-        fixed tid_t ids[32]; // for union member ids
-        adiff_t delta;
+        fixed TidT ids[32]; // for union member ids
+        AdiffT delta;
     }
 
     public struct EnumConstT
     {
-        tid_t tid;
+        TidT tid;
         byte serial;
     }
 
@@ -100,9 +165,9 @@ namespace IdaNet.IdaInterop
 
     public struct RefinfoT
     {
-        public ea_t target;
-        public ea_t basr;
-        public adiff_t tdelta;
+        public EaT target;
+        public EaT basr;
+        public AdiffT tdelta;
         public UInt32 flags;
     }
 
@@ -112,7 +177,7 @@ namespace IdaNet.IdaInterop
         [FieldOffset(0)]
         public RefinfoT ri;
         [FieldOffset(0)]
-        public tid_t tid;
+        public TidT tid;
         [FieldOffset(0)]
         public StrpathT path;
         [FieldOffset(0)]
@@ -129,7 +194,7 @@ namespace IdaNet.IdaInterop
         {
             UnmanagedPtr = ptr;
             ri = new RefinfoT();
-            tid = new tid_t();
+            tid = new TidT();
             path = new StrpathT();
             strtype = new Int32();
             ec = new EnumConstT();
@@ -146,7 +211,7 @@ namespace IdaNet.IdaInterop
 
         public IntPtr UnmanagedPtr { get; set; }
 
-        public tid_t id => (tid_t)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
+        public TidT id => (TidT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
 
         public UInt32 memqty => MarshalingUtils.GetUInt32(UnmanagedPtr, 0x08);
 

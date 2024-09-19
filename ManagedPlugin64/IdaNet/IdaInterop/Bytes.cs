@@ -13,9 +13,6 @@ using FlagsT = System.UInt32;
 using Flags64T = System.UInt64;
 
 using static IdaPlusPlus.IdaInterop;
-using IdaNet.IdaInterop;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 
 namespace IdaNet.IdaInterop
 {

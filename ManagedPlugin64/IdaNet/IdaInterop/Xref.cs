@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ea_t = System.UInt64;
-using tid_t = System.UInt64;
-using sel_t = System.UInt64;
-using size_t = System.UInt64;
-using asize_t = System.UInt64;
-using adiff_t = System.Int64;
-using uval_t = System.UInt64;
-using bgcolor_t = System.UInt32;
-using flags_t = System.UInt32;
+using EaT = System.UInt64;
+using TidT = System.UInt64;
+using SelT = System.UInt64;
+using SizeT = System.UInt64;
+using AsizeT = System.UInt64;
+using AdiffT = System.Int64;
+using UvalT = System.UInt64;
+using BgcolorT = System.UInt32;
+using FlagsT = System.UInt32;
 
 using System.Runtime.InteropServices;
 using static IdaPlusPlus.IdaInterop;
@@ -63,79 +63,77 @@ namespace IdaNet.IdaInterop
     {
         public IntPtr UnmanagedPtr { get; set; }
 
-        internal const int XREF_ALL = 0x00; // return all references
-        internal const int XREF_FAR = 0x01; // don't return ordinary flow xrefs
-        internal const int XREF_DATA = 0x02; // return data references only
+        internal const int XREF_ALL = 0x00;
+        internal const int XREF_FAR = 0x01;
+        internal const int XREF_DATA = 0x02;
 
         internal XRefblkT(IntPtr ptr)
         {
             UnmanagedPtr = ptr;
         }
 
-        // must have setters/getters
-
-        internal ea_t from              ///< the referencing address - filled by first_to(),next_to()
+        internal EaT From
         {
             get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00); }
             private set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x00, value); }
         }
 
-        internal ea_t to                ///< the referenced address - filled by first_from(), next_from()
+        internal EaT To
         {
             get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08); }
             private set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x08, value); }
         }
 
-        internal bool iscode            ///< 1-is code reference; 0-is data reference
+        internal bool Iscode
         {
             get { return (0 != MarshalingUtils.GetByte(UnmanagedPtr, 0x10)); }
         }
 
-        internal byte type              ///< type of the last returned reference (::cref_t & ::dref_t)
+        internal byte Type
         {
             get { return MarshalingUtils.GetByte(UnmanagedPtr, 0x11); }
         }
 
-        internal bool user              ///< 1-is user defined xref, 0-defined by ida
+        internal bool User
         {
             get { return (0 != MarshalingUtils.GetByte(UnmanagedPtr, 0x12)); }
         }
 
-        public bool first_from(ea_t _from, int flags)
+        public bool FirstFrom(EaT _from, int flags)
         {
             return ida_xrefblk_t_first_from(UnmanagedPtr, _from, flags);
         }
-        public bool next_from()
+        public bool NextFrom()
         {
             return ida_xrefblk_t_next_from(UnmanagedPtr);
         }
 
-        public bool first_to(ea_t _to, int flags)
+        public bool FirstTo(EaT _to, int flags)
         {
             return ida_xrefblk_t_first_to(UnmanagedPtr, _to, flags);
         }
-        public bool next_to()
+        public bool NextTo()
         {
             return ida_xrefblk_t_next_to(UnmanagedPtr);
         }
 
-        public bool next_from(ea_t _from, ea_t _to, int flags)
+        public bool NextFrom(EaT _from, EaT _to, int flags)
         {
-            if (first_from(_from, flags))
+            if (FirstFrom(_from, flags))
             {
-                to = _to;
-                return next_from();
+                To = _to;
+                return NextFrom();
             }
 
             return false;
         }
 
-        public bool next_to(ea_t _from, ea_t _to, int flags)
+        public bool NextTo(EaT _from, EaT _to, int flags)
         {
-            if (first_to(_to, flags))
+            if (FirstTo(_to, flags))
             {
-                from = _from;
-                return next_to();
+                From = _from;
+                return NextTo();
             }
 
             return false;

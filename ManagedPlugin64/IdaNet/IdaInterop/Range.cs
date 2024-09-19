@@ -14,7 +14,6 @@ using UvalT = System.UInt64;
 using BgcolorT = System.UInt32;
 
 using static IdaPlusPlus.IdaInterop;
-using System.Security.Cryptography;
 
 namespace IdaNet.IdaInterop
 {
