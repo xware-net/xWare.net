@@ -88,11 +88,31 @@ namespace IdaNet.IdaInterop
     public class MemberT
     {
         public IntPtr UnmanagedPtr { get; set; }
-        public TidT Id { get; set; }
-        public EaT Soff { get; set; }
-        public EaT Eoff { get; set; }
-        public FlagsT Flag { get; set; }
-        public UInt32 Props { get; set; }
+        public TidT Id 
+        {
+            get { return MarshalingUtils.GetUInt64(UnmanagedPtr, 0x00); }
+            set { MarshalingUtils.SetUInt64(UnmanagedPtr, 0x00, value); }
+        }
+        public EaT Soff 
+        {
+            get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08); }
+            set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x08, value); }
+        }
+        public EaT Eoff
+        {
+            get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x10); }
+            set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x10, value); }
+        }
+        public FlagsT Flag
+        {
+            get { return MarshalingUtils.GetUInt32(UnmanagedPtr, 0x18); }
+            set { MarshalingUtils.SetUInt32(UnmanagedPtr, 0x18, value); }
+        }
+        public UInt32 Props
+        {
+            get { return MarshalingUtils.GetUInt32(UnmanagedPtr, 0x1C); }
+            set { MarshalingUtils.SetUInt32(UnmanagedPtr, 0x1C, value); }
+        }
 
         public MemberT(IntPtr ptr)
         {

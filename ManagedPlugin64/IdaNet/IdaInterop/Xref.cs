@@ -75,13 +75,13 @@ namespace IdaNet.IdaInterop
         internal EaT From
         {
             get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00); }
-            private set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x00, value); }
+            set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x00, value); }
         }
 
         internal EaT To
         {
             get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08); }
-            private set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x08, value); }
+            set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x08, value); }
         }
 
         internal bool Iscode
@@ -103,6 +103,7 @@ namespace IdaNet.IdaInterop
         {
             return ida_xrefblk_t_first_from(UnmanagedPtr, _from, flags);
         }
+
         public bool NextFrom()
         {
             return ida_xrefblk_t_next_from(UnmanagedPtr);
