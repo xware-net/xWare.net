@@ -166,62 +166,6 @@ namespace IdaNet.IdaInterop
         }
     }
 
-    public unsafe struct StrpathT
-    {
-        int len;
-        fixed TidT ids[32]; // for union member ids
-        AdiffT delta;
-    }
-
-    public struct EnumConstT
-    {
-        TidT tid;
-        byte serial;
-    }
-
-    public struct CustomDataTypeIdsT
-    {
-    }
-
-    public struct RefinfoT
-    {
-        public EaT target;
-        public EaT basr;
-        public AdiffT tdelta;
-        public UInt32 flags;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct OpinfoT
-    {
-        [FieldOffset(0)]
-        public RefinfoT ri;
-        [FieldOffset(0)]
-        public TidT tid;
-        [FieldOffset(0)]
-        public StrpathT path;
-        [FieldOffset(0)]
-        public Int32 strtype;
-        [FieldOffset(0)]
-        public EnumConstT ec;
-        [FieldOffset(0)]
-        public CustomDataTypeIdsT cd;
-
-        [FieldOffset(0x1000)]
-        public IntPtr UnmanagedPtr;
-
-        public OpinfoT(IntPtr ptr)
-        {
-            UnmanagedPtr = ptr;
-            ri = new RefinfoT();
-            tid = new TidT();
-            path = new StrpathT();
-            strtype = new Int32();
-            ec = new EnumConstT();
-            cd = new CustomDataTypeIdsT();
-        }
-    }
-
     public class StrucT
     {
         public StrucT(IntPtr ptr)
