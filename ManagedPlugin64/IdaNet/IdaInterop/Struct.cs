@@ -88,12 +88,12 @@ namespace IdaNet.IdaInterop
     public class MemberT
     {
         public IntPtr UnmanagedPtr { get; set; }
-        public TidT Id 
+        public TidT Id
         {
             get { return MarshalingUtils.GetUInt64(UnmanagedPtr, 0x00); }
             set { MarshalingUtils.SetUInt64(UnmanagedPtr, 0x00, value); }
         }
-        public EaT Soff 
+        public EaT Soff
         {
             get { return MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x08); }
             set { MarshalingUtils.SetEffectiveAddress(UnmanagedPtr, 0x08, value); }
@@ -175,112 +175,112 @@ namespace IdaNet.IdaInterop
 
         public IntPtr UnmanagedPtr { get; set; }
 
-        public TidT id => (TidT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
+        public TidT Id => (TidT)MarshalingUtils.GetEffectiveAddress(UnmanagedPtr, 0x00);
 
-        public UInt32 memqty => MarshalingUtils.GetUInt32(UnmanagedPtr, 0x08);
+        public UInt32 Memqty => MarshalingUtils.GetUInt32(UnmanagedPtr, 0x08);
 
-        IntPtr members => MarshalingUtils.GetIntPtr(UnmanagedPtr, 0x0C);
+        IntPtr Members => MarshalingUtils.GetIntPtr(UnmanagedPtr, 0x0C);
 
-        public ushort age => MarshalingUtils.GetUShort(UnmanagedPtr, 0x14);
+        public ushort Age => MarshalingUtils.GetUShort(UnmanagedPtr, 0x14);
 
-        public StructureFlags props
+        public StructureFlags Props
         {
             get => (StructureFlags)MarshalingUtils.GetUInt32(UnmanagedPtr, 0x16);
             set => MarshalingUtils.SetUInt32(UnmanagedPtr, 0xE, (UInt32)value);
         }
 
-        Int32 ordinal
+        Int32 Ordinal
         {
             get => MarshalingUtils.GetInt32(UnmanagedPtr, 0x1A);
             set => MarshalingUtils.SetInt32(UnmanagedPtr, 0x1A, value);
         }
 
-        public bool is_varstr()
+        public bool IsVarstr()
         {
-            return (props & StructureFlags.SF_VAR) != 0;
+            return (Props & StructureFlags.SF_VAR) != 0;
         }
 
-        public bool is_union()
+        public bool IsUnion()
         {
-            return (props & StructureFlags.SF_UNION) != 0;
+            return (Props & StructureFlags.SF_UNION) != 0;
         }
 
-        public bool has_union()
+        public bool HasUnion()
         {
-            return (props & StructureFlags.SF_HASUNI) != 0;
+            return (Props & StructureFlags.SF_HASUNI) != 0;
         }
 
-        public bool like_union()
+        public bool LikeUnion()
         {
-            return is_union() || has_union();
+            return IsUnion() || HasUnion();
         }
 
-        public bool is_choosable()
+        public bool IsChoosable()
         {
-            return (props & StructureFlags.SF_NOLIST) == 0;
+            return (Props & StructureFlags.SF_NOLIST) == 0;
         }
 
-        public bool from_til()
+        public bool FromTil()
         {
-            return (props & StructureFlags.SF_TYPLIB) != 0;
+            return (Props & StructureFlags.SF_TYPLIB) != 0;
         }
 
-        public bool is_hidden()
+        public bool IsHidden()
         {
-            return (props & StructureFlags.SF_HIDDEN) != 0;
+            return (Props & StructureFlags.SF_HIDDEN) != 0;
         }
 
-        public bool is_frame()
+        public bool IsFrame()
         {
-            return (props & StructureFlags.SF_FRAME) != 0;
+            return (Props & StructureFlags.SF_FRAME) != 0;
         }
 
-        public int get_alignment()
+        public int GetAlignment()
         {
-            return ((int)(props & StructureFlags.SF_ALIGN) >> 7);
+            return ((int)(Props & StructureFlags.SF_ALIGN) >> 7);
         }
 
-        public bool is_ghost()
+        public bool IsGhost()
         {
-            return (props & StructureFlags.SF_GHOST) != 0;
+            return (Props & StructureFlags.SF_GHOST) != 0;
         }
 
-        public bool is_synced()
+        public bool IsSynced()
         {
-            return ordinal != -1 && !is_frame();
+            return Ordinal != -1 && !IsFrame();
         }
 
-        public bool is_mappedto()
+        public bool IsMappedto()
         {
-            return is_synced() && !is_ghost();
+            return IsSynced() && !IsGhost();
         }
 
-        public bool is_copyof()
+        public bool IsCopyof()
         {
-            return is_synced() && is_ghost();
+            return IsSynced() && IsGhost();
         }
 
-        public void set_alignment(int shift)
+        public void SetAlignment(int shift)
         {
-            props &= ~StructureFlags.SF_ALIGN;
-            props |= ((StructureFlags)(shift << 7) & StructureFlags.SF_ALIGN);
+            Props &= ~StructureFlags.SF_ALIGN;
+            Props |= ((StructureFlags)(shift << 7) & StructureFlags.SF_ALIGN);
         }
 
-        public void set_ghost(bool _is_ghost)
+        public void SetGhost(bool _is_ghost)
         {
-            StructureFlags prps = props;
+            StructureFlags prps = Props;
             Globals.setflag(ref prps, StructureFlags.SF_GHOST, _is_ghost);
-            props = prps;
+            Props = prps;
         }
 
-        public void unsync()
+        public void Unsync()
         {
-            ordinal = -1;
+            Ordinal = -1;
         }
 
-        public IntPtr get_last_member()
+        public IntPtr GetLastMember()
         {
-            return memqty == 0 ? IntPtr.Zero : IntPtr.Zero; // members + memqty - 1;
+            return Memqty == 0 ? IntPtr.Zero : new IntPtr(Members + Memqty - 1);
         }
     }
 }
