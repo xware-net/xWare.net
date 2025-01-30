@@ -115,7 +115,7 @@ SegmentDialog::SegmentDialog(QWidget *parent, UINT flags, LPCSTR title, LPCSTR s
 			if (get_segm_name(&segName, seg, 0) > 0)
 				strncpy_s(buffer, sizeof(buffer), segName.c_str(), SIZESTR(buffer));
 			else
-                strcpy(buffer, "none");
+                qstrcpy(buffer, "none");
 
             QTableWidgetItem *item = new QTableWidgetItem(buffer);
             LPCSTR iconFile;
@@ -197,7 +197,7 @@ SegmentDialog::SegmentDialog(QWidget *parent, UINT flags, LPCSTR title, LPCSTR s
                 segmentTable->setItem(i, TYPE, new QTableWidgetItem("???"));
 
             // Flags "RWE"
-            strcpy(buffer, "[...]");
+            qstrcpy(buffer, "[...]");
             if (seg->perm & SEGPERM_READ)  buffer[1] = 'R';
             if (seg->perm & SEGPERM_WRITE) buffer[2] = 'W';
             if (seg->perm & SEGPERM_EXEC)  buffer[3] = 'E';

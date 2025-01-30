@@ -61,8 +61,8 @@ public:
     MainDialog(bool& optionPlaceStructs, bool& optionProcessStatic, bool& optionAudioOnDone);
 
 private:
-	segment_t* MainDialog_getNthSelectedSegment(int n);
-	int MainDialog_getSelectedSegmentsCount();
+	//segment_t* MainDialog_getNthSelectedSegment(int n);
+	//int MainDialog_getSelectedSegmentsCount();
 
 private slots:
 	void segmentSelect();

@@ -1232,7 +1232,8 @@ static uint32 ida_choose_local_tinfo_and_delta(IntPtr delta, IntPtr ti, IntPtr t
 	return choose_local_tinfo_and_delta((int32*)(delta.ToPointer()), (const til_t*)(ti.ToPointer()), (const char*)(title.ToPointer()), (local_tinfo_predicate_t*)(func.ToPointer()), def_ord, (void*)(ud.ToPointer()));
 }
 
-static void ida_gen_use_arg_tinfos(ea_t caller, IntPtr fti, IntPtr rargs, IntPtr set_optype, IntPtr is_stkarg_load, IntPtr has_delay_slot)
-{
-	gen_use_arg_tinfos(caller, (func_type_data_t*)(fti.ToPointer()), (funcargvec_t*)(rargs.ToPointer()), (set_op_tinfo_t*)(set_optype.ToPointer()), (is_stkarg_load_t*)(is_stkarg_load.ToPointer()), (has_delay_slot_t*)(has_delay_slot.ToPointer()));
-}
+// deprecated
+//static void ida_gen_use_arg_tinfos(ea_t caller, IntPtr fti, IntPtr rargs, IntPtr set_optype, IntPtr is_stkarg_load, IntPtr has_delay_slot)
+//{
+//	gen_use_arg_tinfos(caller, (func_type_data_t*)(fti.ToPointer()), (funcargvec_t*)(rargs.ToPointer()), (set_op_tinfo_t*)(set_optype.ToPointer()), (is_stkarg_load_t*)(is_stkarg_load.ToPointer()), (has_delay_slot_t*)(has_delay_slot.ToPointer()));
+//}
