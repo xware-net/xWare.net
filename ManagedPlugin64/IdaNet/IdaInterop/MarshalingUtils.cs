@@ -17,7 +17,6 @@ using static IdaPlusPlus.IdaInterop;
 
 namespace IdaNet.IdaInterop
 {
-    /// <summary>A set of marshaling utility functions.</summary>
     internal static class MarshalingUtils
     {
         internal static IntPtr Combine(IntPtr baseAddress, int ea64Offset)
@@ -67,7 +66,6 @@ namespace IdaNet.IdaInterop
         internal static void SetEffectiveAddress(IntPtr nativePointer, ushort ea64Offset, ea_t value)
         {
             Marshal.WriteInt64(nativePointer, ea64Offset, (long)value);
-            return;
         }
 
         internal static T GetFunctionPointer<T>(IntPtr nativePointer, ushort ea64Offset)

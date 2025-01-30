@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
-using static IdaPlusPlus.IdaInterop;
-using IdaNet.IdaInterop;
-using ManagedPlugin.Source;
+﻿using ManagedPlugin.Source;
+using System;
 
 namespace ManagedPlugin
 {

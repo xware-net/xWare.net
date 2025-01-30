@@ -36,8 +36,8 @@ ClassInformerHandler classInformerHandler;
 TestHandler testHandler;
 const action_desc_t action[MA_COUNT] =
 {
-    ACTION_DESC_LITERAL(ENUM2STR(MENU_ACTION::MA_CLASSINFORMER),  "ClassInformer",  &classInformerHandler,  "", "ClassInformer plugin", -1),
-    ACTION_DESC_LITERAL(ENUM2STR(MENU_ACTION::MA_TEST), "Test", &testHandler, "", "Test plugin", -1)
+    ACTION_DESC_LITERAL_PLUGMOD(ENUM2STR(MENU_ACTION::MA_CLASSINFORMER),  "ClassInformer",  &classInformerHandler, nullptr, "", "ClassInformer plugin", -1),
+    ACTION_DESC_LITERAL_PLUGMOD(ENUM2STR(MENU_ACTION::MA_TEST), "Test", &testHandler, nullptr, "", "Test plugin", -1)
 };
 
 //--------------------------------------------------------------------------

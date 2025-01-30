@@ -26,7 +26,7 @@
     <PostBuildEvent>rmdir /S /Q "$(IDADIR)\plugins\MixedModePlugin64" 
 mkdir "$(IDADIR)\plugins\MixedModePlugin64"
 xcopy "$(SolutionDir)ManagedPlugin64\$(OutputPath)$(TargetFramework)\*.*" "$(IDADIR)\plugins\MixedModePlugin64\$(TargetName)*.*" /y
-del "$(IDADIR)\plugins\MixedModePlugin64\$(TargetName)Ijwhost.dll"</PostBuildEvent>
+</PostBuildEvent>
     <AssemblyTitle>ManagedPlugin64</AssemblyTitle>
     <Product>ManagedPlugin64</Product>
     <Copyright>Copyright ©  2023</Copyright>
