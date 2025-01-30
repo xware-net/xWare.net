@@ -62,6 +62,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>__MAKEDLL__;__NT__;__IDP__;__EA64__;__X64__;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IDASDK83)\include;$(IDADIR)\plugins\hexrays_sdk\include;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146;4244;4267;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ida.lib;winmm.lib;network.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -83,6 +84,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>__MAKEDLL__;__NT__;__IDP__;__EA64__;__X64__;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IDASDK)\include;$(IDADIR)\plugins\hexrays_sdk\include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4146;4244;4267;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ida.lib;network.lib;%(AdditionalDependencies)</AdditionalDependencies>

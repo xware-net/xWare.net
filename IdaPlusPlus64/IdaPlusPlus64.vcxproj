@@ -50,7 +50,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -65,7 +68,7 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
       <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
-      <DisableSpecificWarnings>4484;4267;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4484;4267;4244;4793;4146;26495;26439;4691;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ida.lib;winmm.lib;QT5Core.lib;Qt5Gui.lib;Qt5PrintSupport.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -91,7 +94,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;__MAKEDLL__;__NT__;__IDP__;__EA64__;__X64__;WIN32;NDEBUG;_CONSOLE;BRIDGETONATIVE_EXPORTS;_WINDOWS;_USRDLL;UNICODE;_UNICODE;__VC__;QT_NO_DEBUG;QT_NAMESPACE=QT;QT_NO_UNICODE_LITERAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IDADIR83)\plugins\hexrays_sdk\include;$(IDASDK83)\include;$(QTDIR)\include</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
-      <DisableSpecificWarnings>4484;4267;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4484;4267;4244;4793;4146;26495;26439;4691;</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

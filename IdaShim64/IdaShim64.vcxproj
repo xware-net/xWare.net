@@ -51,7 +51,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(IDASDK83)\include;$(IDADIR)\plugins\hexrays_sdk\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4146;4244;4267;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -73,7 +73,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(IDASDK83)\include;$(IDADIR)\plugins\hexrays_sdk\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DisableSpecificWarnings>4146</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4146;4244;4267;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
