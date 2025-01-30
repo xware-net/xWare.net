@@ -358,19 +358,18 @@ static ea_t ida_get_debug_name_ea(IntPtr name)
 	return get_debug_name_ea((char*)(name.ToPointer()));
 }
 
-static void ida_get_debug_names(cliext::vector<cliext::pair<ea_t, String^>>^ namesList, ea_t ea1, ea_t ea2)
+static void ida_get_debug_names(System::Collections::Generic::List<System::Tuple<ea_t, System::String^>^>^ namesList, ea_t ea1, ea_t ea2)
 {
+	if (namesList == nullptr)
+		throw gcnew System::ArgumentNullException("namesList");
+
 	ea_name_vec_t names;
 	get_debug_names(&names, ea1, ea2);
-	namesList = gcnew cliext::vector<cliext::pair<ea_t, String^>>();
-	namesList->resize(names.size());
-	int i = 0;
-	for (auto name : names)
+	namesList->Clear();
+	for (auto& nameEntry : names)
 	{
-		auto nameStr = ::ConvertQstringToString(names[i].name);
-		auto namePair = gcnew cliext::pair<ea_t, String^>(names[i].ea, nameStr);
-		namesList->at(i) = *namePair;
-		i++;
+		auto nameStr = ::ConvertQstringToString(nameEntry.name);
+		namesList->Add(gcnew System::Tuple<ea_t, System::String^>(nameEntry.ea, nameStr));
 	}
 }
 
