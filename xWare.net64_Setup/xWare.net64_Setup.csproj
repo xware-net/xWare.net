@@ -13,6 +13,10 @@
     <None Remove="*.wixpdb" />
     <None Remove="*.wixobj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="xWare.net64.msi" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="WixSharp_wix4" Version="2.5.0" />
