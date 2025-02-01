@@ -13,27 +13,19 @@ namespace xWare.net64_Setup
         static void Main()
         {
             var idaDir = GetIdaDirectory();
-            if (string.IsNullOrEmpty(idaDir))
-            {
-                MessageBox.Show("IDA installation directory not found", "Error");
-                return;
-            }
-
-            var idaPluginsDir = Path.Combine(idaDir, "plugins");
-            var idaPluginsMixedModePlugin64Dir = Path.Combine(idaPluginsDir, "MixedModePlugin64");
             var project = new ManagedProject("xWare.net64",
                 new Dir(new Id("IDADIR"), idaDir,
                     new Dir(new Id("IDAPLUGINSDIR"), "plugins",
-                        new File(@"c:\temp\xWare.net_act\x64\Release\IdaShim64.dll"),
-                        new File(@"c:\temp\xWare.net_act\x64\Release\xWare.net64.dll"),
-                        new File(@"c:\temp\xWare.net_act\x64\Release\xWare.net64.dll.manifest"),
-                        new File(@"c:\temp\xWare.net_act\x64\Release\xWare.net64.deps.json"),
-                        new File(@"c:\temp\xWare.net_act\x64\Release\xWare.net64.runtimeconfig.json"),
+                        new File(@"..\x64\Release\IdaShim64.dll"),
+                        new File(@"..\x64\Release\xWare.net64.dll"),
+                        new File(@"..\x64\Release\xWare.net64.dll.manifest"),
+                        new File(@"..\x64\Release\xWare.net64.deps.json"),
+                        new File(@"..\x64\Release\xWare.net64.runtimeconfig.json"),
                         new Dir(new Id("IDAPLUGINSMIXMODEPLUGIN64DIR"), "MixedModePlugin64",
-                            new File(@"c:\temp\xWare.net_act\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.dll"),
-                            new File(@"c:\temp\xWare.net_act\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.deps.json"),
-                            new File(@"c:\temp\xWare.net_act\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\IdaPlusPlus64.dll"),
-                            new File(@"c:\temp\xWare.net_act\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\Ijwhost.dll")
+                            new File(@"..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.dll"),
+                            new File(@"..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.deps.json"),
+                            new File(@"..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\IdaPlusPlus64.dll"),
+                            new File(@"..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\Ijwhost.dll")
                             )
                         )
                     )
