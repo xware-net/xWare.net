@@ -1,0 +1,1 @@
+msiexec /i xWare.net64.msi /L* log.txt

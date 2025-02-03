@@ -6,49 +6,51 @@
     To suppress generation of this file remove `set ide=true` from the PostBuildEvent of the VS project
 </auto-generated>
 -->
-  <Package Compressed="yes" ProductCode="ef5777c5-d0cc-4890-80c6-8e2f2641b797" Name="xWare.net64" Language="1033" Version="1.0.0.0" UpgradeCode="ef5777c5-d0cc-4890-80c6-8e2f1641b796" Manufacturer="mirce" InstallerVersion="200">
+  <Package Compressed="yes" ProductCode="43340a4d-8815-4c48-a03b-7697ca94d95a" Name="xWare.net64" Language="1033" Version="1.0.0.0" UpgradeCode="43340a4d-8815-4c48-a03b-7697ba94d959" Manufacturer="mirce" InstallerVersion="200">
     <SummaryInformation Codepage="Windows-1252" />
     <Media Id="1" Cabinet="xWare.net64_.cab" EmbedCab="yes" />
 
-    <Directory Id="IDADIR" Name="ABSOLUTEPATH">
-      <Directory Id="IDAPLUGINSDIR" Name="plugins">
+    <Launch Condition="HAS_PREREQUISITE = &quot;1&quot; OR Installed" Message="IDA (Freeware) version 8.3 or later must be installed." />
 
-        <Component Id="Component.IdaShim64.dll_1883059478" Guid="ef5777c5-d0cc-4890-80c6-8e2f0e9aa9bb">
-          <File Id="IdaShim64.dll_1883059478" Source="..\x64\Release\IdaShim64.dll" />
+    <Directory Id="INSTALLDIR" Name="[INSTALLDIR]">
+      <Directory Id="IDAPLUGINS_DIR" Name="plugins">
+
+        <Component Id="Component.IdaShim64.dll_806913400" Guid="43340a4d-8815-4c48-a03b-76973dc1d692">
+          <File Id="IdaShim64.dll_806913400" Source="..\x64\Release\IdaShim64.dll" />
         </Component>
 
-        <Component Id="Component.xWare.net64.dll_2644933730" Guid="ef5777c5-d0cc-4890-80c6-8e2fb229d429">
-          <File Id="xWare.net64.dll_2644933730" Source="..\x64\Release\xWare.net64.dll" />
+        <Component Id="Component.xWare.net64.dll_2865181305" Guid="43340a4d-8815-4c48-a03b-7697ad99ec5f">
+          <File Id="xWare.net64.dll_2865181305" Source="..\x64\Release\xWare.net64.dll" />
         </Component>
 
-        <Component Id="Component.xWare.net64.dll.manifest_3136056046" Guid="ef5777c5-d0cc-4890-80c6-8e2feeafaa47">
-          <File Id="xWare.net64.dll.manifest_3136056046" Source="..\x64\Release\xWare.net64.dll.manifest" />
+        <Component Id="Component.xWare.net64.dll.manifest_3189138416" Guid="43340a4d-8815-4c48-a03b-7697466909ba">
+          <File Id="xWare.net64.dll.manifest_3189138416" Source="..\x64\Release\xWare.net64.dll.manifest" />
         </Component>
 
-        <Component Id="Component.xWare.net64.deps.json_653896503" Guid="ef5777c5-d0cc-4890-80c6-8e2f0a6e0248">
-          <File Id="xWare.net64.deps.json_653896503" Source="..\x64\Release\xWare.net64.deps.json" />
+        <Component Id="Component.xWare.net64.deps.json_248880690" Guid="43340a4d-8815-4c48-a03b-7697c6c53bf7">
+          <File Id="xWare.net64.deps.json_248880690" Source="..\x64\Release\xWare.net64.deps.json" />
         </Component>
 
-        <Component Id="Component.xWare.net64.runtimeconfig.json_2147295526" Guid="ef5777c5-d0cc-4890-80c6-8e2fad1281ef">
-          <File Id="xWare.net64.runtimeconfig.json_2147295526" Source="..\x64\Release\xWare.net64.runtimeconfig.json" />
+        <Component Id="Component.xWare.net64.runtimeconfig.json_2692767802" Guid="43340a4d-8815-4c48-a03b-7697ad757af6">
+          <File Id="xWare.net64.runtimeconfig.json_2692767802" Source="..\x64\Release\xWare.net64.runtimeconfig.json" />
         </Component>
 
-        <Directory Id="IDAPLUGINSMIXMODEPLUGIN64DIR" Name="MixedModePlugin64">
+        <Directory Id="IDAMIXEDMODEPLUGIN64_DIR" Name="MixedModePlugin64">
 
-          <Component Id="Component.ManagedPlugin64.dll_1701079533" Guid="ef5777c5-d0cc-4890-80c6-8e2ff6bb07e4">
-            <File Id="ManagedPlugin64.dll_1701079533" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.dll" />
+          <Component Id="Component.ManagedPlugin64.dll_2049588283" Guid="43340a4d-8815-4c48-a03b-769797c60679">
+            <File Id="ManagedPlugin64.dll_2049588283" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.dll" />
           </Component>
 
-          <Component Id="Component.ManagedPlugin64.deps.json_3741934415" Guid="ef5777c5-d0cc-4890-80c6-8e2f08ec58d2">
-            <File Id="ManagedPlugin64.deps.json_3741934415" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.deps.json" />
+          <Component Id="Component.ManagedPlugin64.deps.json_1494733230" Guid="43340a4d-8815-4c48-a03b-76979b620aff">
+            <File Id="ManagedPlugin64.deps.json_1494733230" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\ManagedPlugin64.deps.json" />
           </Component>
 
-          <Component Id="Component.IdaPlusPlus64.dll_2930416690" Guid="ef5777c5-d0cc-4890-80c6-8e2fb7180ac6">
-            <File Id="IdaPlusPlus64.dll_2930416690" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\IdaPlusPlus64.dll" />
+          <Component Id="Component.IdaPlusPlus64.dll_2079887641" Guid="43340a4d-8815-4c48-a03b-769787b57046">
+            <File Id="IdaPlusPlus64.dll_2079887641" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\IdaPlusPlus64.dll" />
           </Component>
 
-          <Component Id="Component.Ijwhost.dll_3578148093" Guid="ef5777c5-d0cc-4890-80c6-8e2fe8779b3f">
-            <File Id="Ijwhost.dll_3578148093" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\Ijwhost.dll" />
+          <Component Id="Component.Ijwhost.dll_1856335362" Guid="43340a4d-8815-4c48-a03b-76971314b9ca">
+            <File Id="Ijwhost.dll_1856335362" Source="..\ManagedPlugin64\bin\x64\Release\net8.0-windows7.0\Ijwhost.dll" />
           </Component>
 
         </Directory>
@@ -63,45 +65,43 @@
       <EmbeddedUI Id="WixSharp_EmbeddedUI_Asm" SourceFile="WixSharp.UI.CA.dll" />
     </UI>
 
+    <CustomAction Id="CheckPrerequisite" BinaryRef="CheckPrerequisite_File" DllEntry="CheckPrerequisite" Return="check" Execute="immediate" />
     <CustomAction Id="WixSharp_InitRuntime_Action" BinaryRef="WixSharp_InitRuntime_Action_File" DllEntry="WixSharp_InitRuntime_Action" Return="check" Execute="immediate" />
     <CustomAction Id="Set_CancelRequestHandler_Props" Property="CancelRequestHandler" Value="UpgradeCode=[UpgradeCode];INSTALLDIR=[INSTALLDIR];UILevel=[UILevel];ProductCode=[ProductCode];ADDLOCAL=[ADDLOCAL];ADDFEATURES=[ADDFEATURES]" />
     <CustomAction Id="CancelRequestHandler" BinaryRef="WixSharp_InitRuntime_Action_File" DllEntry="CancelRequestHandler" Return="check" Impersonate="no" Execute="deferred" />
-    <CustomAction Id="Set_DirAbsolutePath" Property="IDADIR" Value="c:\idafreeware83" />
 
+    <Binary Id="CheckPrerequisite_File" SourceFile="%this%.CA.dll" />
     <Binary Id="WixSharp_InitRuntime_Action_File" SourceFile="WixSharp.CA.dll" />
     <Binary Id="WixSharp_UIText" SourceFile="..\..\..\ProgramData\WixSharp\2.5.0.0\WixUI_en-US.wxl" />
     <Binary Id="WixSharp_LicenceFile" SourceFile="xWare.net64.licence.rtf" />
     <Binary Id="WixSharpUI_Bmp_Dialog" SourceFile="xWare.net64.dialog_bmp.png" />
     <Binary Id="WixSharpUI_Bmp_Banner" SourceFile="xWare.net64.dialog_banner.png" />
 
-    <Property Id="WixSharp_UI_INSTALLDIR" Value="IDADIR" />
+    <Property Id="INSTALLDIR" Value="C:\IDAFreeware8.3" />
+    <Property Id="HAS_PREREQUISITE" Value="0" />
+    <Property Id="WixSharp_UI_INSTALLDIR" Value="INSTALLDIR" />
     <Property Id="UAC_WARNING" Value="Please wait for UAC prompt to appear.&#xD;&#xA;&#xD;&#xA;If it appears minimized then activate it from the taskbar." />
     <Property Id="WixSharp_InstallDialogs" Value="WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.WelcomeDialog&#xA;WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.InstallDirDialog&#xA;WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.ProgressDialog&#xA;WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.ExitDialog" />
     <Property Id="WixSharp_ModifyDialogs" Value="WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.MaintenanceTypeDialog&#xA;WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.ProgressDialog&#xA;WixSharp.UI, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3775edd25acc43c2|WixSharp.UI.Forms.ExitDialog" />
-    <Property Id="INSTALLDIR_ABSOLUTEPATH" Value="c:\idafreeware83" />
 
     <Feature Id="Complete" Title="Complete" Level="1" AllowAbsent="yes">
-      <ComponentRef Id="Component.IdaShim64.dll_1883059478" />
-      <ComponentRef Id="Component.xWare.net64.dll_2644933730" />
-      <ComponentRef Id="Component.xWare.net64.dll.manifest_3136056046" />
-      <ComponentRef Id="Component.xWare.net64.deps.json_653896503" />
-      <ComponentRef Id="Component.xWare.net64.runtimeconfig.json_2147295526" />
-      <ComponentRef Id="Component.ManagedPlugin64.dll_1701079533" />
-      <ComponentRef Id="Component.ManagedPlugin64.deps.json_3741934415" />
-      <ComponentRef Id="Component.IdaPlusPlus64.dll_2930416690" />
-      <ComponentRef Id="Component.Ijwhost.dll_3578148093" />
+      <ComponentRef Id="Component.IdaShim64.dll_806913400" />
+      <ComponentRef Id="Component.xWare.net64.dll_2865181305" />
+      <ComponentRef Id="Component.xWare.net64.dll.manifest_3189138416" />
+      <ComponentRef Id="Component.xWare.net64.deps.json_248880690" />
+      <ComponentRef Id="Component.xWare.net64.runtimeconfig.json_2692767802" />
+      <ComponentRef Id="Component.ManagedPlugin64.dll_2049588283" />
+      <ComponentRef Id="Component.ManagedPlugin64.deps.json_1494733230" />
+      <ComponentRef Id="Component.IdaPlusPlus64.dll_2079887641" />
+      <ComponentRef Id="Component.Ijwhost.dll_1856335362" />
     </Feature>
 
     <InstallExecuteSequence>
+      <Custom Condition="NOT Installed" Action="CheckPrerequisite" Before="AppSearch" />
       <Custom Condition=" (1) " Action="WixSharp_InitRuntime_Action" Before="AppSearch" />
       <Custom Action="Set_CancelRequestHandler_Props" Before="InstallFinalize" />
       <Custom Condition=" (1) " Action="CancelRequestHandler" After="Set_CancelRequestHandler_Props" />
-      <Custom Condition="(NOT Installed) AND (UILevel &lt; 5) AND (IDADIR = ABSOLUTEPATH)" Action="Set_DirAbsolutePath" Before="AppSearch" />
     </InstallExecuteSequence>
-
-    <InstallUISequence>
-      <Custom Condition="(NOT Installed) AND (UILevel = 5) AND (IDADIR = ABSOLUTEPATH)" Action="Set_DirAbsolutePath" Before="AppSearch" />
-    </InstallUISequence>
   </Package>
 </Wix>
 
